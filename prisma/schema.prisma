@@ -19,15 +19,15 @@ enum PostType {
 }
 
 model Post {
-  id          Int      @id @default(autoincrement())
-  type        PostType
-  title       String
-  description String // rendered as rich-text markdown
-  thumbnail   Image?   @relation(fields: [thumbnailId], references: [id])
-  thumbnailId Int?     @map("thumbnail_id")
-  photos      Photo[]
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
+  id           Int      @id @default(autoincrement())
+  type         PostType
+  title        String
+  description  String // rendered as rich-text markdown
+  thumbnail    Image?   @relation(fields: [thumbnail_id], references: [id])
+  thumbnail_id Int?
+  photos       Photo[]
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
 
   @@map("posts")
 }
@@ -56,17 +56,17 @@ model Gallery {
 }
 
 model Event {
-  id          Int       @id @default(autoincrement())
-  title       String
-  description String
-  startAt     DateTime  @map("start_at")
-  endsAt      DateTime  @map("ends_at")
-  location    Location  @relation(fields: [locationId], references: [id])
-  locationId  Int       @map("location_id")
-  eventType   EventType @relation(fields: [eventTypeId], references: [id])
-  eventTypeId Int       @map("event_type_id")
-  image       Image?    @relation(fields: [imageId], references: [id])
-  imageId     Int?      @map("image_id")
+  id            Int       @id @default(autoincrement())
+  title         String
+  description   String
+  start_at      DateTime
+  ends_at       DateTime
+  location      Location  @relation(fields: [location_id], references: [id])
+  location_id   Int
+  event_type    EventType @relation(fields: [event_type_id], references: [id])
+  event_type_id Int
+  image         Image?    @relation(fields: [image_id], references: [id])
+  image_id      Int?
 
   @@map("events")
 }
@@ -95,30 +95,30 @@ model Diy {
   id          Int      @id @default(autoincrement())
   title       String
   description String
-  location    Location @relation(fields: [locationId], references: [id])
-  locationId  Int      @map("location_id")
+  location    Location @relation(fields: [location_id], references: [id])
+  location_id Int
   photos      Photo[]
 
   @@map("diys")
 }
 
 model Sponsor {
-  id     Int    @id @default(autoincrement())
-  name   String
-  logo   Image  @relation(fields: [logoId], references: [id])
-  logoId Int    @map("logo_id")
+  id      Int    @id @default(autoincrement())
+  name    String
+  logo    Image  @relation(fields: [logo_id], references: [id])
+  logo_id Int
 
   @@map("sponsors")
 }
 
 // Utility images uploaded via the admin dashboard (thumbnails, event images, sponsor logos)
 model Image {
-  id             Int       @id @default(autoincrement())
-  url            String
-  key            String    @unique // R2 object key, needed to delete the object from the bucket
-  postThumbnails Post[]
-  events         Event[]
-  sponsors       Sponsor[]
+  id              Int       @id @default(autoincrement())
+  url             String
+  key             String    @unique // R2 object key, needed to delete the object from the bucket
+  post_thumbnails Post[]
+  events          Event[]
+  sponsors        Sponsor[]
 
   @@map("images")
 }
