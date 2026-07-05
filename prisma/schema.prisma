@@ -1,0 +1,124 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum PostType {
+  POST
+  FILM
+  EXHIBITION
+
+  @@map("post_type")
+}
+
+model Post {
+  id          Int      @id @default(autoincrement())
+  type        PostType
+  title       String
+  description String // rendered as rich-text markdown
+  thumbnail   Image?   @relation(fields: [thumbnailId], references: [id])
+  thumbnailId Int?     @map("thumbnail_id")
+  photos      Photo[]
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("posts")
+}
+
+// Authored content photos (galleries, posts, DIYs) — distinct from utility Image uploads
+model Photo {
+  id        Int       @id @default(autoincrement())
+  url       String
+  key       String    @unique // R2 object key, needed to delete the object from the bucket
+  date      DateTime  @db.Date
+  author    String
+  posts     Post[]
+  galleries Gallery[]
+  diys      Diy[]
+
+  @@map("photos")
+}
+
+model Gallery {
+  id      Int     @id @default(autoincrement())
+  year    Int
+  authors String // free-form credit line, independent of Photo.author
+  photos  Photo[]
+
+  @@map("galleries")
+}
+
+model Event {
+  id          Int       @id @default(autoincrement())
+  title       String
+  description String
+  startAt     DateTime  @map("start_at")
+  endsAt      DateTime  @map("ends_at")
+  location    Location  @relation(fields: [locationId], references: [id])
+  locationId  Int       @map("location_id")
+  eventType   EventType @relation(fields: [eventTypeId], references: [id])
+  eventTypeId Int       @map("event_type_id")
+  image       Image?    @relation(fields: [imageId], references: [id])
+  imageId     Int?      @map("image_id")
+
+  @@map("events")
+}
+
+model EventType {
+  id     Int     @id @default(autoincrement())
+  name   String
+  events Event[]
+
+  @@map("event_types")
+}
+
+model Location {
+  id          Int     @id @default(autoincrement())
+  name        String
+  lat         Float
+  lng         Float
+  description String
+  events      Event[]
+  diys        Diy[]
+
+  @@map("locations")
+}
+
+model Diy {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  location    Location @relation(fields: [locationId], references: [id])
+  locationId  Int      @map("location_id")
+  photos      Photo[]
+
+  @@map("diys")
+}
+
+model Sponsor {
+  id     Int    @id @default(autoincrement())
+  name   String
+  logo   Image  @relation(fields: [logoId], references: [id])
+  logoId Int    @map("logo_id")
+
+  @@map("sponsors")
+}
+
+// Utility images uploaded via the admin dashboard (thumbnails, event images, sponsor logos)
+model Image {
+  id             Int       @id @default(autoincrement())
+  url            String
+  key            String    @unique // R2 object key, needed to delete the object from the bucket
+  postThumbnails Post[]
+  events         Event[]
+  sponsors       Sponsor[]
+
+  @@map("images")
+}
