@@ -93,7 +93,7 @@ export function LocationMapPicker({
           Click the map to place the marker, or type coordinates below.
         </span>
       </div>
-      <div className="flex gap-3.5 *:flex-1">
+      <div className="flex flex-col gap-3.5 sm:flex-row sm:*:flex-1">
         <label className="flex flex-col gap-1.5 text-sm font-semibold">
           Latitude
           <input

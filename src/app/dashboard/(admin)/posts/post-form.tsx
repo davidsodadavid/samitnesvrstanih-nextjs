@@ -21,7 +21,7 @@ export function PostForm({
       <Field label="Title">
         <TextInput type="text" name="title" defaultValue={post?.title} required />
       </Field>
-      <div className="flex gap-3.5 *:flex-1">
+      <div className="flex flex-col gap-3.5 sm:flex-row sm:*:flex-1">
         <Field label="Type">
           <Select
             name="type"

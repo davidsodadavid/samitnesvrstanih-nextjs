@@ -35,7 +35,7 @@ export function EventForm({
       <Field label="Title">
         <TextInput type="text" name="title" defaultValue={event?.title} required />
       </Field>
-      <div className="flex gap-3.5 *:flex-1">
+      <div className="flex flex-col gap-3.5 sm:flex-row sm:*:flex-1">
         <Field label="Starts">
           <TextInput
             type="datetime-local"
@@ -53,7 +53,7 @@ export function EventForm({
           />
         </Field>
       </div>
-      <div className="flex gap-3.5 *:flex-1">
+      <div className="flex flex-col gap-3.5 sm:flex-row sm:*:flex-1">
         <Field label="Location">
           <Select
             name="location_id"

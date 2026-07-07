@@ -38,14 +38,14 @@ export default async function SponsorsPage({
       ) : (
         <form
           action={createSponsor}
-          className="mb-6 flex max-w-2xl items-center gap-3 rounded-xl border border-zinc-200 bg-white p-4"
+          className="mb-6 flex max-w-2xl flex-wrap items-center gap-3 rounded-xl border border-zinc-200 bg-white p-4"
         >
           <input
             type="text"
             name="name"
             placeholder="Sponsor name…"
             required
-            className={`flex-1 ${inputClass}`}
+            className={`min-w-40 flex-1 ${inputClass}`}
           />
           <select name="logo_id" required defaultValue="" className={inputClass}>
             <option value="" disabled>
@@ -73,21 +73,24 @@ export default async function SponsorsPage({
           {sponsors.map((sponsor) => (
             <div
               key={sponsor.id}
-              className="flex items-center gap-3 rounded-xl border border-zinc-200 bg-white px-4 py-3"
+              className="flex flex-wrap items-center gap-3 rounded-xl border border-zinc-200 bg-white px-4 py-3"
             >
               <img
                 src={sponsor.logo.url}
                 alt={`${sponsor.name} logo`}
                 className="h-10 w-14 shrink-0 rounded-md object-contain"
               />
-              <form action={updateSponsor} className="flex flex-1 items-center gap-3">
+              <form
+                action={updateSponsor}
+                className="flex flex-1 flex-wrap items-center gap-3"
+              >
                 <input type="hidden" name="id" value={sponsor.id} />
                 <input
                   type="text"
                   name="name"
                   defaultValue={sponsor.name}
                   required
-                  className={`flex-1 ${inputClass}`}
+                  className={`min-w-36 flex-1 ${inputClass}`}
                 />
                 <select
                   name="logo_id"

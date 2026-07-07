@@ -15,7 +15,7 @@ export function GalleryForm({
   return (
     <FormCard action={action}>
       {gallery && <input type="hidden" name="id" value={gallery.id} />}
-      <div className="flex gap-3.5 *:flex-1">
+      <div className="flex flex-col gap-3.5 sm:flex-row sm:*:flex-1">
         <Field label="Year">
           <TextInput
             type="number"
@@ -24,13 +24,12 @@ export function GalleryForm({
             required
           />
         </Field>
-        <Field label="Authors">
+        <Field label="Authors (optional)">
           <TextInput
             type="text"
             name="authors"
-            defaultValue={gallery?.authors}
+            defaultValue={gallery?.authors ?? ''}
             placeholder="Credit line for the gallery"
-            required
           />
         </Field>
       </div>

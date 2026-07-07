@@ -30,14 +30,14 @@ export default async function ImagesPage({
 
       <form
         action={uploadImage}
-        className="mb-6 flex max-w-2xl items-center gap-3 rounded-xl border border-zinc-200 bg-white p-4"
+        className="mb-6 flex max-w-2xl flex-wrap items-center gap-3 rounded-xl border border-zinc-200 bg-white p-4"
       >
         <input
           type="file"
           name="file"
           accept="image/*"
           required
-          className="flex-1 text-sm file:mr-3 file:cursor-pointer file:rounded-lg file:border file:border-zinc-300 file:bg-white file:px-3 file:py-1.5 file:text-sm file:font-semibold"
+          className="min-w-0 flex-1 text-sm file:mr-3 file:cursor-pointer file:rounded-lg file:border file:border-zinc-300 file:bg-white file:px-3 file:py-1.5 file:text-sm file:font-semibold"
         />
         <button
           type="submit"

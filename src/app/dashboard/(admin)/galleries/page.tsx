@@ -18,7 +18,9 @@ export default async function GalleriesPage() {
           {galleries.map((gallery) => (
             <tr key={gallery.id} className="border-b border-zinc-100 last:border-none">
               <td className="px-3 py-2.5 font-medium">{gallery.year}</td>
-              <td className="px-3 py-2.5">{gallery.authors}</td>
+              <td className="px-3 py-2.5">
+                {gallery.authors ?? <span className="text-zinc-400">—</span>}
+              </td>
               <td className="px-3 py-2.5 text-zinc-500">{gallery._count.photos}</td>
               <td className="px-3 py-2.5">
                 <div className="flex items-center justify-end gap-3">

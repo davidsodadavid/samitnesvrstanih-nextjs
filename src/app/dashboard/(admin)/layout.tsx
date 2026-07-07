@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { logout } from './actions'
+import { SidebarShell } from './_components/sidebar-shell'
 
 export const metadata = { title: 'Samit dashboard' }
 
@@ -38,37 +39,40 @@ const sections: { label: string; links: { href: string; label: string }[] }[] = 
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex min-h-screen w-full bg-zinc-100 text-zinc-900">
-      <aside className="sticky top-0 flex h-screen w-56 shrink-0 flex-col gap-1 bg-zinc-900 px-3 py-5 text-zinc-50">
-        <Link href="/dashboard" className="px-2.5 pb-4 text-lg font-bold tracking-wide">
-          Samit
-        </Link>
-        {sections.map((section) => (
-          <div key={section.label}>
-            <p className="px-2.5 pt-3 pb-1 text-[11px] tracking-widest text-zinc-500 uppercase">
-              {section.label}
-            </p>
-            {section.links.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="block rounded-md px-2.5 py-2 text-sm text-zinc-300 hover:bg-zinc-800 hover:text-white"
-              >
-                {link.label}
-              </Link>
-            ))}
-          </div>
-        ))}
-        <form action={logout} className="mt-auto pt-3">
-          <button
-            type="submit"
-            className="w-full cursor-pointer rounded-md px-2.5 py-2 text-left text-sm text-zinc-400 hover:bg-zinc-800 hover:text-white"
-          >
-            Log out
-          </button>
-        </form>
-      </aside>
-      <main className="min-w-0 flex-1 px-8 py-7">{children}</main>
-    </div>
+    <SidebarShell
+      nav={
+        <>
+          <Link href="/dashboard" className="px-2.5 pb-4 text-lg font-bold tracking-wide">
+            Samit
+          </Link>
+          {sections.map((section) => (
+            <div key={section.label}>
+              <p className="px-2.5 pt-3 pb-1 text-[11px] tracking-widest text-zinc-500 uppercase">
+                {section.label}
+              </p>
+              {section.links.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="block rounded-md px-2.5 py-2 text-sm text-zinc-300 hover:bg-zinc-800 hover:text-white"
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
+          ))}
+          <form action={logout} className="mt-auto pt-3">
+            <button
+              type="submit"
+              className="w-full cursor-pointer rounded-md px-2.5 py-2 text-left text-sm text-zinc-400 hover:bg-zinc-800 hover:text-white"
+            >
+              Log out
+            </button>
+          </form>
+        </>
+      }
+    >
+      {children}
+    </SidebarShell>
   )
 }

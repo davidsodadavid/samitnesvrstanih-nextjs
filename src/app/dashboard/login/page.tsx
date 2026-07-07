@@ -10,10 +10,10 @@ export default async function LoginPage({
   const { error } = await searchParams
 
   return (
-    <div className="flex min-h-screen w-full items-center justify-center bg-zinc-100 text-zinc-900">
+    <div className="flex min-h-screen w-full items-center justify-center bg-zinc-100 p-4 text-zinc-900">
       <form
         action={login}
-        className="flex w-90 flex-col gap-4 rounded-xl border border-zinc-200 bg-white p-8"
+        className="flex w-full max-w-90 flex-col gap-4 rounded-xl border border-zinc-200 bg-white p-6 sm:p-8"
       >
         <h1 className="text-xl font-bold">Samit dashboard</h1>
         {error && (

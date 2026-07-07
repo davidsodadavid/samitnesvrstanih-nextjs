@@ -3,6 +3,8 @@
 const inputClass =
   'rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm font-normal outline-offset-[-1px] focus:outline-2 focus:outline-zinc-900'
 
+// Deliberately NOT a <label>: fields wrap complex widgets (markdown editor,
+// pickers) and a label forwards any click inside it to its first button.
 export function Field({
   label,
   children,
@@ -11,10 +13,10 @@ export function Field({
   children: React.ReactNode
 }) {
   return (
-    <label className="flex flex-col gap-1.5 text-sm font-semibold">
-      {label}
+    <div className="flex flex-col gap-1.5 text-sm font-semibold">
+      <span>{label}</span>
       {children}
-    </label>
+    </div>
   )
 }
 
@@ -67,7 +69,7 @@ export function FormCard({
   return (
     <form
       action={action}
-      className="flex max-w-5xl flex-col gap-3.5 rounded-xl border border-zinc-200 bg-white p-5"
+      className="flex max-w-5xl flex-col gap-3.5 rounded-xl border border-zinc-200 bg-white p-4 sm:p-5"
     >
       {children}
     </form>

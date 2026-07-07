@@ -9,8 +9,8 @@ function parseGallery(formData: FormData) {
   const year = Number(formData.get('year'))
   const authors = String(formData.get('authors') ?? '').trim()
   const photoIds = formData.getAll('photo_ids').map(Number)
-  if (!Number.isInteger(year) || !authors) return null
-  return { year, authors, photoIds }
+  if (!Number.isInteger(year)) return null
+  return { year, authors: authors || null, photoIds }
 }
 
 export async function createGallery(formData: FormData) {

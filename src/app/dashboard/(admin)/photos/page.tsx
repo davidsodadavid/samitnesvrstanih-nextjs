@@ -35,7 +35,7 @@ export default async function PhotosPage({
           required
           className="text-sm file:mr-3 file:cursor-pointer file:rounded-lg file:border file:border-zinc-300 file:bg-white file:px-3 file:py-1.5 file:text-sm file:font-semibold"
         />
-        <div className="flex gap-3">
+        <div className="flex flex-col gap-3 sm:flex-row">
           <label className="flex flex-1 flex-col gap-1.5 text-sm font-semibold">
             Author
             <input type="text" name="author" required className={inputClass()} />
@@ -56,7 +56,7 @@ export default async function PhotosPage({
       {photos.length === 0 ? (
         <p className="py-5 text-sm text-zinc-500">No photos uploaded yet.</p>
       ) : (
-        <div className="overflow-hidden rounded-xl border border-zinc-200 bg-white">
+        <div className="overflow-x-auto rounded-xl border border-zinc-200 bg-white">
           <table className="w-full border-collapse text-sm">
             <thead>
               <tr className="border-b border-zinc-200 text-left text-xs tracking-wide text-zinc-500 uppercase">

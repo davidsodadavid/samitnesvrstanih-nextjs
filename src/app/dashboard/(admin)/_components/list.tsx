@@ -10,7 +10,7 @@ export function PageHeader({
   newLabel?: string
 }) {
   return (
-    <div className="mb-5 flex items-center justify-between gap-3">
+    <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
       <h1 className="text-2xl font-bold">{title}</h1>
       {newHref && (
         <Link
@@ -69,7 +69,7 @@ export function Table({
   children: React.ReactNode
 }) {
   return (
-    <div className="overflow-hidden rounded-xl border border-zinc-200 bg-white">
+    <div className="overflow-x-auto rounded-xl border border-zinc-200 bg-white">
       <table className="w-full border-collapse text-sm">
         <thead>
           <tr className="border-b border-zinc-200 text-left text-xs tracking-wide text-zinc-500 uppercase">

@@ -28,14 +28,14 @@ export default async function EventTypesPage({
 
       <form
         action={createEventType}
-        className="mb-6 flex max-w-xl items-center gap-3 rounded-xl border border-zinc-200 bg-white p-4"
+        className="mb-6 flex max-w-xl flex-wrap items-center gap-3 rounded-xl border border-zinc-200 bg-white p-4"
       >
         <input
           type="text"
           name="name"
           placeholder="New event type…"
           required
-          className={`flex-1 ${inputClass}`}
+          className={`min-w-40 flex-1 ${inputClass}`}
         />
         <button
           type="submit"
@@ -52,16 +52,19 @@ export default async function EventTypesPage({
         {eventTypes.map((eventType) => (
           <div
             key={eventType.id}
-            className="flex items-center gap-3 rounded-xl border border-zinc-200 bg-white px-4 py-3"
+            className="flex flex-wrap items-center gap-3 rounded-xl border border-zinc-200 bg-white px-4 py-3"
           >
-            <form action={renameEventType} className="flex flex-1 items-center gap-3">
+            <form
+              action={renameEventType}
+              className="flex flex-1 flex-wrap items-center gap-3"
+            >
               <input type="hidden" name="id" value={eventType.id} />
               <input
                 type="text"
                 name="name"
                 defaultValue={eventType.name}
                 required
-                className={`flex-1 ${inputClass}`}
+                className={`min-w-36 flex-1 ${inputClass}`}
               />
               <button
                 type="submit"

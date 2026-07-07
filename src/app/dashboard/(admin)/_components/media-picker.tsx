@@ -53,7 +53,7 @@ function Modal({
 }) {
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-6"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-3 sm:p-6"
       onClick={onClose}
     >
       <div
@@ -70,7 +70,7 @@ function Modal({
             ✕ Close
           </button>
         </div>
-        <div className="flex-1 overflow-y-auto p-5">{children}</div>
+        <div className="flex-1 overflow-y-auto p-4 sm:p-5">{children}</div>
         {footer && <div className="border-t border-zinc-200 px-5 py-3">{footer}</div>}
       </div>
     </div>
@@ -151,7 +151,7 @@ export function ImagePicker({
   }
 
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex flex-wrap items-center gap-3">
       <input type="hidden" name={name} value={selected?.id ?? ''} required={required} />
       {selected ? (
         <img
@@ -274,7 +274,7 @@ export function PhotoMultiPicker({
               <button
                 type="button"
                 onClick={() => toggle(photo)}
-                className="absolute top-1 right-1 hidden h-6 w-6 cursor-pointer items-center justify-center rounded-full bg-black/60 text-xs text-white group-hover:flex"
+                className="absolute top-1 right-1 flex h-6 w-6 cursor-pointer items-center justify-center rounded-full bg-black/60 text-xs text-white md:hidden md:group-hover:flex"
                 aria-label="Remove photo"
               >
                 ✕
