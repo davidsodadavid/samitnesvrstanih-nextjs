@@ -12,13 +12,13 @@ export async function uploadPhoto(formData: FormData) {
   const author = String(formData.get('author') ?? '').trim()
   const date = String(formData.get('date') ?? '')
 
-  if (!(file instanceof File) || file.size === 0 || !author || !date) {
+  if (!(file instanceof File) || file.size === 0) {
     redirect('/dashboard/photos?error=missing-fields')
   }
 
   const { key, url } = await uploadToR2(file, 'photos')
   await prisma.photo.create({
-    data: { key, url, author, date: new Date(date) },
+    data: { key, url, author: author || null, date: date ? new Date(date) : null },
   })
 
   revalidatePath('/dashboard/photos')
@@ -29,11 +29,10 @@ export async function updatePhoto(formData: FormData) {
   const id = Number(formData.get('id'))
   const author = String(formData.get('author') ?? '').trim()
   const date = String(formData.get('date') ?? '')
-  if (!author || !date) redirect(`/dashboard/photos/${id}?error=missing-fields`)
 
   await prisma.photo.update({
     where: { id },
-    data: { author, date: new Date(date) },
+    data: { author: author || null, date: date ? new Date(date) : null },
   })
 
   revalidatePath('/dashboard/photos')

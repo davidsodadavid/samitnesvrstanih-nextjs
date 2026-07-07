@@ -89,3 +89,42 @@ export function Table({
 export function Empty({ children }: { children: React.ReactNode }) {
   return <p className="py-5 text-sm text-zinc-500">{children}</p>
 }
+
+export function Pagination({
+  page,
+  pageCount,
+  basePath,
+}: {
+  page: number
+  pageCount: number
+  basePath: string
+}) {
+  if (pageCount <= 1) return null
+  const linkClass =
+    'rounded-lg border border-zinc-300 bg-white px-3 py-1.5 font-semibold hover:bg-zinc-50'
+  const disabledClass =
+    'rounded-lg border border-zinc-200 bg-white px-3 py-1.5 font-semibold text-zinc-300'
+  return (
+    <div className="mt-4 flex items-center justify-between gap-3 text-sm">
+      <span className="text-zinc-500">
+        Page {page} of {pageCount}
+      </span>
+      <div className="flex gap-2">
+        {page > 1 ? (
+          <Link href={`${basePath}?page=${page - 1}`} className={linkClass}>
+            ← Previous
+          </Link>
+        ) : (
+          <span className={disabledClass}>← Previous</span>
+        )}
+        {page < pageCount ? (
+          <Link href={`${basePath}?page=${page + 1}`} className={linkClass}>
+            Next →
+          </Link>
+        ) : (
+          <span className={disabledClass}>Next →</span>
+        )}
+      </div>
+    </div>
+  )
+}

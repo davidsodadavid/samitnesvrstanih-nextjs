@@ -6,7 +6,7 @@ import { requireAdmin } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import type { PostType } from '@/generated/prisma/client'
 
-const POST_TYPES = ['POST', 'FILM', 'EXHIBITION'] as const
+const POST_TYPES = ['POST', 'FILM', 'EXHIBITION', 'WORKSHOP', 'CONCERT'] as const
 
 function parsePost(formData: FormData) {
   const title = String(formData.get('title') ?? '').trim()

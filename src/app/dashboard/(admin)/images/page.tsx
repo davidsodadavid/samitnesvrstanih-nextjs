@@ -1,5 +1,8 @@
 import { prisma } from '@/lib/prisma'
+import { Pagination } from '../_components/list'
 import { deleteImage, uploadImage } from './actions'
+
+const PAGE_SIZE = 30
 
 const errors: Record<string, string> = {
   'no-file': 'Pick a file to upload first.',
@@ -9,17 +12,24 @@ const errors: Record<string, string> = {
 export default async function ImagesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string }>
+  searchParams: Promise<{ error?: string; page?: string }>
 }) {
-  const { error } = await searchParams
-  const images = await prisma.image.findMany({ orderBy: { id: 'desc' } })
+  const { error, page: pageParam } = await searchParams
+  const total = await prisma.image.count()
+  const pageCount = Math.max(1, Math.ceil(total / PAGE_SIZE))
+  const page = Math.min(Math.max(1, Number(pageParam) || 1), pageCount)
+  const images = await prisma.image.findMany({
+    orderBy: { id: 'desc' },
+    skip: (page - 1) * PAGE_SIZE,
+    take: PAGE_SIZE,
+  })
 
   return (
     <>
       <h1 className="mb-5 text-2xl font-bold">Images</h1>
       <p className="mb-4 max-w-2xl text-sm text-zinc-500">
         Utility images: post thumbnails, event images and sponsor logos. For gallery/content
-        photos with an author, use <b>Photos</b> instead.
+        photos with an author, use <b>Photography</b> instead.
       </p>
 
       {error && (
@@ -77,6 +87,7 @@ export default async function ImagesPage({
           ))}
         </div>
       )}
+      <Pagination page={page} pageCount={pageCount} basePath="/dashboard/images" />
     </>
   )
 }

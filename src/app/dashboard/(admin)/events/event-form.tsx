@@ -3,9 +3,9 @@ import {
   FormCard,
   Select,
   SubmitButton,
-  TextArea,
   TextInput,
 } from '../_components/form'
+import { MarkdownEditor } from '../_components/markdown-editor'
 import { ImagePicker } from '../_components/media-picker'
 import type { ImageItem } from '../_components/media-types'
 import type { Event, EventType, Location } from '@/generated/prisma/client'
@@ -83,7 +83,7 @@ export function EventForm({
         <ImagePicker name="image_id" initial={image} />
       </Field>
       <Field label="Description">
-        <TextArea name="description" defaultValue={event?.description} />
+        <MarkdownEditor name="description" defaultValue={event?.description} />
       </Field>
       <SubmitButton>{event ? 'Save' : 'Create event'}</SubmitButton>
     </FormCard>

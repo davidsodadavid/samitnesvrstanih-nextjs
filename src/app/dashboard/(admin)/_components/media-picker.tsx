@@ -109,15 +109,21 @@ function LoadMore({
   )
 }
 
-/** Single-select image picker: preview + button that opens a paginated modal grid. */
+/**
+ * Single-select image picker: preview + button that opens a paginated modal grid.
+ * `compact` collapses the trigger to thumbnail + "Change" so it fits inline rows;
+ * the upload option moves into the modal footer.
+ */
 export function ImagePicker({
   name,
   initial,
   required = false,
+  compact = false,
 }: {
   name: string
   initial?: ImageItem | null
   required?: boolean
+  compact?: boolean
 }) {
   const [selected, setSelected] = useState<ImageItem | null>(initial ?? null)
   const [open, setOpen] = useState(false)
@@ -150,19 +156,27 @@ export function ImagePicker({
     }
   }
 
+  const thumbnail = selected ? (
+    <img
+      src={selected.url}
+      alt={selected.key}
+      className="h-14 w-20 rounded-lg border border-zinc-200 object-cover"
+    />
+  ) : (
+    <div className="flex h-14 w-20 items-center justify-center rounded-lg border border-dashed border-zinc-300 text-xs text-zinc-400">
+      none
+    </div>
+  )
+
   return (
     <div className="flex flex-wrap items-center gap-3">
       <input type="hidden" name={name} value={selected?.id ?? ''} required={required} />
-      {selected ? (
-        <img
-          src={selected.url}
-          alt={selected.key}
-          className="h-14 w-20 rounded-lg border border-zinc-200 object-cover"
-        />
+      {compact ? (
+        <button type="button" onClick={openModal} className="cursor-pointer">
+          {thumbnail}
+        </button>
       ) : (
-        <div className="flex h-14 w-20 items-center justify-center rounded-lg border border-dashed border-zinc-300 text-xs text-zinc-400">
-          none
-        </div>
+        thumbnail
       )}
       <input
         ref={fileInputRef}
@@ -171,21 +185,33 @@ export function ImagePicker({
         onChange={handleUpload}
         className="hidden"
       />
-      <button
-        type="button"
-        disabled={uploading}
-        onClick={() => fileInputRef.current?.click()}
-        className="cursor-pointer rounded-lg bg-zinc-900 px-3.5 py-1.5 text-sm font-semibold text-white hover:bg-zinc-700 disabled:opacity-50"
-      >
-        {uploading ? 'Uploading…' : 'Upload…'}
-      </button>
-      <button
-        type="button"
-        onClick={openModal}
-        className="cursor-pointer rounded-lg border border-zinc-300 px-3 py-1.5 text-sm font-semibold hover:bg-zinc-50"
-      >
-        Choose from gallery…
-      </button>
+      {compact ? (
+        <button
+          type="button"
+          onClick={openModal}
+          className="cursor-pointer text-sm font-medium text-zinc-600 hover:underline"
+        >
+          {selected ? 'Change' : 'Choose…'}
+        </button>
+      ) : (
+        <>
+          <button
+            type="button"
+            disabled={uploading}
+            onClick={() => fileInputRef.current?.click()}
+            className="cursor-pointer rounded-lg bg-zinc-900 px-3.5 py-1.5 text-sm font-semibold text-white hover:bg-zinc-700 disabled:opacity-50"
+          >
+            {uploading ? 'Uploading…' : 'Upload…'}
+          </button>
+          <button
+            type="button"
+            onClick={openModal}
+            className="cursor-pointer rounded-lg border border-zinc-300 px-3 py-1.5 text-sm font-semibold hover:bg-zinc-50"
+          >
+            Choose from gallery…
+          </button>
+        </>
+      )}
       {selected && !required && (
         <button
           type="button"
@@ -197,7 +223,22 @@ export function ImagePicker({
       )}
 
       {open && (
-        <Modal title="Choose an image" onClose={() => setOpen(false)}>
+        <Modal
+          title="Choose an image"
+          onClose={() => setOpen(false)}
+          footer={
+            compact ? (
+              <button
+                type="button"
+                disabled={uploading}
+                onClick={() => fileInputRef.current?.click()}
+                className="cursor-pointer rounded-lg bg-zinc-900 px-3.5 py-1.5 text-sm font-semibold text-white hover:bg-zinc-700 disabled:opacity-50"
+              >
+                {uploading ? 'Uploading…' : 'Upload new…'}
+              </button>
+            ) : undefined
+          }
+        >
           <div className="grid grid-cols-[repeat(auto-fill,minmax(8rem,1fr))] gap-3">
             {items.map((image) => (
               <button
@@ -265,10 +306,10 @@ export function PhotoMultiPicker({
       ) : (
         <div className="grid grid-cols-[repeat(auto-fill,minmax(6.5rem,1fr))] gap-2.5">
           {selected.map((photo) => (
-            <div key={photo.id} className="group relative" title={photo.author}>
+            <div key={photo.id} className="group relative" title={photo.author ?? undefined}>
               <img
                 src={photo.url}
-                alt={`Photo by ${photo.author}`}
+                alt={photo.author ? `Photo by ${photo.author}` : 'Photo'}
                 className="h-20 w-full rounded-lg object-cover"
               />
               <button
@@ -317,14 +358,14 @@ export function PhotoMultiPicker({
                   key={photo.id}
                   type="button"
                   onClick={() => toggle(photo)}
-                  title={photo.author}
+                  title={photo.author ?? undefined}
                   className={`relative cursor-pointer overflow-hidden rounded-lg border-2 ${
                     isSelected ? 'border-blue-600' : 'border-transparent hover:border-zinc-300'
                   }`}
                 >
                   <img
                     src={photo.url}
-                    alt={`Photo by ${photo.author}`}
+                    alt={photo.author ? `Photo by ${photo.author}` : 'Photo'}
                     className="h-24 w-full object-cover"
                   />
                   {isSelected && (

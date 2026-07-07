@@ -1,6 +1,6 @@
-import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 import { Empty, ErrorNote, PageHeader } from '../_components/list'
+import { ImagePicker } from '../_components/media-picker'
 import { createSponsor, deleteSponsor, updateSponsor } from './actions'
 
 const inputClass =
@@ -12,59 +12,35 @@ export default async function SponsorsPage({
   searchParams: Promise<{ error?: string }>
 }) {
   const { error } = await searchParams
-  const [sponsors, images] = await Promise.all([
-    prisma.sponsor.findMany({ orderBy: { name: 'asc' }, include: { logo: true } }),
-    prisma.image.findMany({ orderBy: { id: 'desc' } }),
-  ])
-
-  const logoOptions = images.map((image) => ({
-    value: image.id,
-    label: image.key.split('/').pop() ?? image.key,
-  }))
+  const sponsors = await prisma.sponsor.findMany({
+    orderBy: { name: 'asc' },
+    include: { logo: true },
+  })
 
   return (
     <>
       <PageHeader title="Sponsors" />
       <ErrorNote message={error ? 'Name and logo are both required.' : undefined} />
 
-      {images.length === 0 ? (
-        <p className="mb-6 max-w-xl text-sm text-zinc-600">
-          Sponsors need a logo. Upload one under{' '}
-          <Link href="/dashboard/images" className="font-semibold underline">
-            Images
-          </Link>{' '}
-          first.
-        </p>
-      ) : (
-        <form
-          action={createSponsor}
-          className="mb-6 flex max-w-2xl flex-wrap items-center gap-3 rounded-xl border border-zinc-200 bg-white p-4"
+      <form
+        action={createSponsor}
+        className="mb-6 flex max-w-2xl flex-wrap items-center gap-3 rounded-xl border border-zinc-200 bg-white p-4"
+      >
+        <ImagePicker name="logo_id" required compact />
+        <input
+          type="text"
+          name="name"
+          placeholder="Sponsor name…"
+          required
+          className={`min-w-40 flex-1 ${inputClass}`}
+        />
+        <button
+          type="submit"
+          className="cursor-pointer rounded-lg bg-zinc-900 px-4 py-2 text-sm font-semibold text-white hover:bg-zinc-700"
         >
-          <input
-            type="text"
-            name="name"
-            placeholder="Sponsor name…"
-            required
-            className={`min-w-40 flex-1 ${inputClass}`}
-          />
-          <select name="logo_id" required defaultValue="" className={inputClass}>
-            <option value="" disabled>
-              — logo —
-            </option>
-            {logoOptions.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-          <button
-            type="submit"
-            className="cursor-pointer rounded-lg bg-zinc-900 px-4 py-2 text-sm font-semibold text-white hover:bg-zinc-700"
-          >
-            Add
-          </button>
-        </form>
-      )}
+          Add
+        </button>
+      </form>
 
       {sponsors.length === 0 ? (
         <Empty>No sponsors yet.</Empty>
@@ -75,16 +51,12 @@ export default async function SponsorsPage({
               key={sponsor.id}
               className="flex flex-wrap items-center gap-3 rounded-xl border border-zinc-200 bg-white px-4 py-3"
             >
-              <img
-                src={sponsor.logo.url}
-                alt={`${sponsor.name} logo`}
-                className="h-10 w-14 shrink-0 rounded-md object-contain"
-              />
               <form
                 action={updateSponsor}
-                className="flex flex-1 flex-wrap items-center gap-3"
+                className="flex min-w-0 flex-1 flex-wrap items-center gap-3"
               >
                 <input type="hidden" name="id" value={sponsor.id} />
+                <ImagePicker name="logo_id" initial={sponsor.logo} required compact />
                 <input
                   type="text"
                   name="name"
@@ -92,18 +64,6 @@ export default async function SponsorsPage({
                   required
                   className={`min-w-36 flex-1 ${inputClass}`}
                 />
-                <select
-                  name="logo_id"
-                  defaultValue={sponsor.logo_id}
-                  required
-                  className={inputClass}
-                >
-                  {logoOptions.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
                 <button
                   type="submit"
                   className="cursor-pointer text-sm font-medium text-zinc-600 hover:underline"

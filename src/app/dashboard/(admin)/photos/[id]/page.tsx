@@ -17,28 +17,26 @@ export default async function EditPhotoPage({
       <div className="flex max-w-2xl gap-5 rounded-xl border border-zinc-200 bg-white p-5">
         <img
           src={photo.url}
-          alt={`Photo by ${photo.author}`}
+          alt={photo.author ? `Photo by ${photo.author}` : 'Photo'}
           className="h-40 w-56 shrink-0 rounded-lg object-cover"
         />
         <form action={updatePhoto} className="flex flex-1 flex-col gap-3.5">
           <input type="hidden" name="id" value={photo.id} />
           <label className="flex flex-col gap-1.5 text-sm font-semibold">
-            Author
+            Author (optional)
             <input
               type="text"
               name="author"
-              defaultValue={photo.author}
-              required
+              defaultValue={photo.author ?? ''}
               className="rounded-lg border border-zinc-300 px-3 py-2 text-sm font-normal outline-offset-[-1px] focus:outline-2 focus:outline-zinc-900"
             />
           </label>
           <label className="flex flex-col gap-1.5 text-sm font-semibold">
-            Date taken
+            Date taken (optional)
             <input
               type="date"
               name="date"
-              defaultValue={photo.date.toISOString().slice(0, 10)}
-              required
+              defaultValue={photo.date ? photo.date.toISOString().slice(0, 10) : ''}
               className="rounded-lg border border-zinc-300 px-3 py-2 text-sm font-normal outline-offset-[-1px] focus:outline-2 focus:outline-zinc-900"
             />
           </label>

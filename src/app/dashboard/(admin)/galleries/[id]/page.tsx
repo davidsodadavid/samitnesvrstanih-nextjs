@@ -21,7 +21,15 @@ export default async function EditGalleryPage({
   return (
     <>
       <PageHeader title={`Edit gallery ${gallery.year}`} />
-      <ErrorNote message={error ? 'A valid year is required.' : undefined} />
+      <ErrorNote
+        message={
+          error === 'year_taken'
+            ? 'A gallery for that year already exists.'
+            : error
+              ? 'A valid year is required.'
+              : undefined
+        }
+      />
       <GalleryForm action={updateGallery} gallery={gallery} selectedPhotos={gallery.photos} />
     </>
   )

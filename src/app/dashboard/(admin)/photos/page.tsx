@@ -1,6 +1,9 @@
 import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
+import { Pagination } from '../_components/list'
 import { deletePhoto, uploadPhoto } from './actions'
+
+const PAGE_SIZE = 30
 
 function inputClass() {
   return 'rounded-lg border border-zinc-300 px-3 py-2 text-sm outline-offset-[-1px] focus:outline-2 focus:outline-zinc-900'
@@ -9,18 +12,25 @@ function inputClass() {
 export default async function PhotosPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string }>
+  searchParams: Promise<{ error?: string; page?: string }>
 }) {
-  const { error } = await searchParams
-  const photos = await prisma.photo.findMany({ orderBy: { id: 'desc' } })
+  const { error, page: pageParam } = await searchParams
+  const total = await prisma.photo.count()
+  const pageCount = Math.max(1, Math.ceil(total / PAGE_SIZE))
+  const page = Math.min(Math.max(1, Number(pageParam) || 1), pageCount)
+  const photos = await prisma.photo.findMany({
+    orderBy: { id: 'desc' },
+    skip: (page - 1) * PAGE_SIZE,
+    take: PAGE_SIZE,
+  })
 
   return (
     <>
-      <h1 className="mb-5 text-2xl font-bold">Photos</h1>
+      <h1 className="mb-5 text-2xl font-bold">Photography</h1>
 
       {error && (
         <p className="mb-4 max-w-2xl rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
-          File, author and date are all required.
+          Pick a file to upload first.
         </p>
       )}
 
@@ -37,12 +47,12 @@ export default async function PhotosPage({
         />
         <div className="flex flex-col gap-3 sm:flex-row">
           <label className="flex flex-1 flex-col gap-1.5 text-sm font-semibold">
-            Author
-            <input type="text" name="author" required className={inputClass()} />
+            Author (optional)
+            <input type="text" name="author" className={inputClass()} />
           </label>
           <label className="flex flex-1 flex-col gap-1.5 text-sm font-semibold">
-            Date taken
-            <input type="date" name="date" required className={inputClass()} />
+            Date taken (optional)
+            <input type="date" name="date" className={inputClass()} />
           </label>
         </div>
         <button
@@ -74,13 +84,21 @@ export default async function PhotosPage({
                     <a href={photo.url} target="_blank" rel="noreferrer">
                       <img
                         src={photo.url}
-                        alt={`Photo by ${photo.author}`}
+                        alt={photo.author ? `Photo by ${photo.author}` : 'Photo'}
                         className="h-10 w-14 rounded-md object-cover"
                       />
                     </a>
                   </td>
-                  <td className="px-3 py-2">{photo.author}</td>
-                  <td className="px-3 py-2">{photo.date.toISOString().slice(0, 10)}</td>
+                  <td className="px-3 py-2">
+                    {photo.author ?? <span className="text-zinc-400">—</span>}
+                  </td>
+                  <td className="px-3 py-2">
+                    {photo.date ? (
+                      photo.date.toISOString().slice(0, 10)
+                    ) : (
+                      <span className="text-zinc-400">—</span>
+                    )}
+                  </td>
                   <td className="max-w-48 truncate px-3 py-2 text-zinc-500" title={photo.key}>
                     {photo.key.split('/').pop()}
                   </td>
@@ -109,6 +127,7 @@ export default async function PhotosPage({
           </table>
         </div>
       )}
+      <Pagination page={page} pageCount={pageCount} basePath="/dashboard/photos" />
     </>
   )
 }

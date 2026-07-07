@@ -12,7 +12,15 @@ export default async function NewGalleryPage({
   return (
     <>
       <PageHeader title="New gallery" />
-      <ErrorNote message={error ? 'A valid year is required.' : undefined} />
+      <ErrorNote
+        message={
+          error === 'year_taken'
+            ? 'A gallery for that year already exists.'
+            : error
+              ? 'A valid year is required.'
+              : undefined
+        }
+      />
       <GalleryForm action={createGallery} />
     </>
   )

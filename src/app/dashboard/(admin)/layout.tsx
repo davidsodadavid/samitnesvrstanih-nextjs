@@ -12,28 +12,30 @@ const sections: { label: string; links: { href: string; label: string }[] }[] = 
     label: 'Content',
     links: [
       { href: '/dashboard/posts', label: 'Posts' },
-      { href: '/dashboard/galleries', label: 'Galleries' },
       { href: '/dashboard/diys', label: 'DIY' },
     ],
   },
   {
-    label: 'Events',
+    label: 'Program',
     links: [
       { href: '/dashboard/events', label: 'Events' },
       { href: '/dashboard/event-types', label: 'Event types' },
-      { href: '/dashboard/locations', label: 'Locations' },
     ],
   },
   {
     label: 'Media',
     links: [
-      { href: '/dashboard/photos', label: 'Photos' },
+      { href: '/dashboard/galleries', label: 'Galleries' },
+      { href: '/dashboard/photos', label: 'Photography' },
       { href: '/dashboard/images', label: 'Images' },
     ],
   },
   {
     label: 'Other',
-    links: [{ href: '/dashboard/sponsors', label: 'Sponsors' }],
+    links: [
+      { href: '/dashboard/sponsors', label: 'Sponsors' },
+      { href: '/dashboard/locations', label: 'Locations' },
+    ],
   },
 ]
 

@@ -1,4 +1,5 @@
-import { Field, FormCard, Select, SubmitButton, TextArea, TextInput } from '../_components/form'
+import { Field, FormCard, Select, SubmitButton, TextInput } from '../_components/form'
+import { MarkdownEditor } from '../_components/markdown-editor'
 import { PhotoMultiPicker } from '../_components/media-picker'
 import type { PhotoItem } from '../_components/media-types'
 import type { Diy, Location } from '@/generated/prisma/client'
@@ -33,7 +34,7 @@ export function DiyForm({
         />
       </Field>
       <Field label="Description">
-        <TextArea name="description" defaultValue={diy?.description} />
+        <MarkdownEditor name="description" defaultValue={diy?.description} />
       </Field>
       <Field label="Photos">
         <PhotoMultiPicker initialSelected={selectedPhotos} />

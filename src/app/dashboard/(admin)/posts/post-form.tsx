@@ -30,6 +30,8 @@ export function PostForm({
               { value: 'POST', label: 'Post' },
               { value: 'FILM', label: 'Film' },
               { value: 'EXHIBITION', label: 'Exhibition' },
+              { value: 'WORKSHOP', label: 'Workshop' },
+              { value: 'CONCERT', label: 'Concert' },
             ]}
           />
         </Field>

@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
+import { Prisma } from '@/generated/prisma/client'
 import { requireAdmin } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 
@@ -13,18 +14,27 @@ function parseGallery(formData: FormData) {
   return { year, authors: authors || null, photoIds }
 }
 
+function isYearTaken(error: unknown) {
+  return error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002'
+}
+
 export async function createGallery(formData: FormData) {
   await requireAdmin()
   const data = parseGallery(formData)
   if (!data) redirect('/dashboard/galleries/new?error=invalid')
 
-  await prisma.gallery.create({
-    data: {
-      year: data.year,
-      authors: data.authors,
-      photos: { connect: data.photoIds.map((id) => ({ id })) },
-    },
-  })
+  try {
+    await prisma.gallery.create({
+      data: {
+        year: data.year,
+        authors: data.authors,
+        photos: { connect: data.photoIds.map((id) => ({ id })) },
+      },
+    })
+  } catch (error) {
+    if (isYearTaken(error)) redirect('/dashboard/galleries/new?error=year_taken')
+    throw error
+  }
   revalidatePath('/dashboard/galleries')
   redirect('/dashboard/galleries')
 }
@@ -35,14 +45,19 @@ export async function updateGallery(formData: FormData) {
   const data = parseGallery(formData)
   if (!data) redirect(`/dashboard/galleries/${id}?error=invalid`)
 
-  await prisma.gallery.update({
-    where: { id },
-    data: {
-      year: data.year,
-      authors: data.authors,
-      photos: { set: data.photoIds.map((photoId) => ({ id: photoId })) },
-    },
-  })
+  try {
+    await prisma.gallery.update({
+      where: { id },
+      data: {
+        year: data.year,
+        authors: data.authors,
+        photos: { set: data.photoIds.map((photoId) => ({ id: photoId })) },
+      },
+    })
+  } catch (error) {
+    if (isYearTaken(error)) redirect(`/dashboard/galleries/${id}?error=year_taken`)
+    throw error
+  }
   revalidatePath('/dashboard/galleries')
   redirect('/dashboard/galleries')
 }
