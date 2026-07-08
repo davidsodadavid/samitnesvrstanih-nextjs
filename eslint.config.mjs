@@ -15,8 +15,10 @@ const eslintConfig = defineConfig([
     "src/generated/**",
   ]),
   {
-    // Admin previews of R2 uploads don't need next/image optimization
-    files: ["src/app/dashboard/**"],
+    // Admin previews of R2 uploads don't need next/image optimization.
+    // Public pages: switch to next/image once the R2 public domain is fixed
+    // and added to images.remotePatterns.
+    files: ["src/app/dashboard/**", "src/app/(public)/**"],
     rules: {
       "@next/next/no-img-element": "off",
     },
