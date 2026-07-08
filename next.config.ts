@@ -3,6 +3,8 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
+  // Self-contained production build (server.js + traced node_modules) for VPS deploys
+  output: "standalone",
   reactCompiler: true,
   turbopack: {
     // A stray lockfile in a parent directory makes Next mis-detect the workspace root

@@ -1,0 +1,69 @@
+name: Deploy
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+# Never run two deploys at once; queue instead of cancelling so a deploy is never half-applied
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      # Dummy — the build must not touch a database (all DB pages are force-dynamic)
+      DATABASE_URL: postgresql://build:build@localhost:5432/build
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm build
+
+      - name: Assemble standalone artifact
+        run: |
+          cp -r public .next/standalone/public
+          cp -r .next/static .next/standalone/.next/static
+
+      - name: Set up SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H "${{ secrets.SSH_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Upload release
+        run: |
+          RELEASE=${GITHUB_SHA::8}
+          rsync -az --delete .next/standalone/ \
+            "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/srv/samit/releases/$RELEASE/"
+
+      - name: Run database migrations (via SSH tunnel)
+        env:
+          # postgresql://samit:<password>@localhost:5433/samit — port 5433 is the tunnel below
+          DATABASE_URL: ${{ secrets.PROD_DATABASE_URL }}
+        run: |
+          ssh -f -N -L 5433:localhost:5432 \
+            -o ExitOnForwardFailure=yes -o ServerAliveInterval=30 \
+            "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}"
+          pnpm exec prisma migrate deploy
+
+      - name: Activate release
+        run: |
+          RELEASE=${GITHUB_SHA::8}
+          ssh "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" "
+            ln -sfn /srv/samit/releases/$RELEASE /srv/samit/current &&
+            pm2 startOrReload /srv/samit/ecosystem.config.js &&
+            pm2 save &&
+            cd /srv/samit/releases && ls -1t | tail -n +4 | xargs -r rm -rf --
+          "
