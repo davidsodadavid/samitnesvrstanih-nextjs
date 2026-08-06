@@ -14,21 +14,45 @@ const dayFormat = new Intl.DateTimeFormat('en-GB', {
 })
 const timeFormat = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit' })
 
+function ProgramHeader() {
+  return (
+    <>
+      <div className="relative flex h-24 items-center justify-center bg-black sm:h-32 md:h-40">
+        {/* Photo strip that normally peeks out below this bar is TODO — a
+            per-event-type image is coming later. */}
+        <img
+          src="/program/corner-icon.svg"
+          alt=""
+          className="absolute left-4 h-10 w-auto sm:h-14 md:h-16"
+        />
+        <h1 className="font-display text-4xl text-white uppercase sm:text-6xl md:text-8xl">
+          Program
+        </h1>
+        <img
+          src="/program/corner-icon.svg"
+          alt=""
+          className="absolute right-4 h-10 w-auto sm:h-14 md:h-16"
+        />
+      </div>
+    </>
+  )
+}
+
 export default async function ProgramPage() {
   const events = await prisma.event.findMany({
     where: {
       start_at: { gte: new Date(YEAR, 0, 1), lt: new Date(YEAR + 1, 0, 1) },
     },
     orderBy: { start_at: 'asc' },
-    include: { location: true },
+    include: { location: true, event_type: true },
   })
 
   if (events.length === 0) {
     return (
-      <>
-        <h1 className="mb-6 text-3xl font-bold">Program {YEAR}</h1>
-        <p className="text-zinc-500">No program yet.</p>
-      </>
+      <div className="relative left-1/2 -mt-8 -mb-8 min-h-screen w-screen -translate-x-1/2 bg-[#ff3c21] pb-8">
+        <ProgramHeader />
+        <p className="px-4 py-8 text-white">No program yet.</p>
+      </div>
     )
   }
 
@@ -44,6 +68,8 @@ export default async function ProgramPage() {
       id: event.id,
       timeRange: `${timeFormat.format(event.start_at)}–${timeFormat.format(event.ends_at)}`,
       title: event.title,
+      description: event.description,
+      eventType: { id: event.event_type.id, name: event.event_type.name },
       location: {
         id: event.location.id,
         name: event.location.name,
@@ -54,9 +80,11 @@ export default async function ProgramPage() {
   }
 
   return (
-    <>
-      <h1 className="mb-6 text-3xl font-bold">Program {YEAR}</h1>
-      <ProgramView days={days} />
-    </>
+    <div className="relative left-1/2 -mt-8 -mb-8 min-h-screen w-screen -translate-x-1/2 bg-[#ff3c21] pb-8">
+      <ProgramHeader />
+      <div className="mx-auto max-w-5xl px-4 py-8">
+        <ProgramView days={days} />
+      </div>
+    </div>
   )
 }
