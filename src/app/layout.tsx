@@ -48,7 +48,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${kharkivTone.variable} ${mozillaText.variable} ${mozillaHeadline.variable}`}
+      // overflow-x-hidden guards against the full-bleed sections' w-screen breakout
+      // (100vw doesn't subtract the scrollbar's width, so it overshoots by a few px)
+      className={`overflow-x-hidden ${geistSans.variable} ${geistMono.variable} ${kharkivTone.variable} ${mozillaText.variable} ${mozillaHeadline.variable}`}
     >
       <body>{children}</body>
     </html>

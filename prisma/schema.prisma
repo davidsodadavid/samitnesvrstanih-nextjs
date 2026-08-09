@@ -74,9 +74,12 @@ model Event {
 }
 
 model EventType {
-  id     Int     @id @default(autoincrement())
-  name   String
-  events Event[]
+  id      Int     @id @default(autoincrement())
+  name    String
+  color   String  @default("#3b82f6") // hex color used for map pins/legend
+  icon    Image?  @relation(fields: [icon_id], references: [id])
+  icon_id Int?
+  events  Event[]
 
   @@map("event_types")
 }
@@ -121,6 +124,7 @@ model Image {
   post_thumbnails Post[]
   events          Event[]
   sponsors        Sponsor[]
+  event_types     EventType[]
 
   @@map("images")
 }

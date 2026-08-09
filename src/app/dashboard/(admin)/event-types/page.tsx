@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma'
 import { ErrorNote, PageHeader } from '../_components/list'
+import { ImagePicker } from '../_components/media-picker'
 import { createEventType, deleteEventType, renameEventType } from './actions'
 
 const errors: Record<string, string> = {
@@ -18,7 +19,7 @@ export default async function EventTypesPage({
   const { error } = await searchParams
   const eventTypes = await prisma.eventType.findMany({
     orderBy: { name: 'asc' },
-    include: { _count: { select: { events: true } } },
+    include: { _count: { select: { events: true } }, icon: true },
   })
 
   return (
@@ -30,6 +31,14 @@ export default async function EventTypesPage({
         action={createEventType}
         className="mb-6 flex max-w-xl flex-wrap items-center gap-3 rounded-xl border border-zinc-200 bg-white p-4"
       >
+        <ImagePicker name="icon_id" compact />
+        <input
+          type="color"
+          name="color"
+          defaultValue="#3b82f6"
+          title="Pin color"
+          className="h-9 w-9 shrink-0 cursor-pointer rounded-lg border border-zinc-300 p-0.5"
+        />
         <input
           type="text"
           name="name"
@@ -59,6 +68,14 @@ export default async function EventTypesPage({
               className="flex flex-1 flex-wrap items-center gap-3"
             >
               <input type="hidden" name="id" value={eventType.id} />
+              <ImagePicker name="icon_id" initial={eventType.icon} compact />
+              <input
+                type="color"
+                name="color"
+                defaultValue={eventType.color}
+                title="Pin color"
+                className="h-9 w-9 shrink-0 cursor-pointer rounded-lg border border-zinc-300 p-0.5"
+              />
               <input
                 type="text"
                 name="name"
@@ -70,7 +87,7 @@ export default async function EventTypesPage({
                 type="submit"
                 className="cursor-pointer text-sm font-medium text-zinc-600 hover:underline"
               >
-                Rename
+                Save
               </button>
             </form>
             <span className="text-xs text-zinc-400">{eventType._count.events} events</span>

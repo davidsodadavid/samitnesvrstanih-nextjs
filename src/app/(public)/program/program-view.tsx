@@ -9,7 +9,7 @@ export type ProgramEvent = {
   timeRange: string
   title: string
   description: string
-  eventType: { id: number; name: string }
+  eventType: { id: number; name: string; iconUrl: string | null; color: string }
   location: { id: number; name: string; lat: number; lng: number }
 }
 
@@ -23,22 +23,47 @@ function escapeHtml(text: string): string {
     .replaceAll('"', '&quot;')
 }
 
+// The design's buttons have almost no padding at all — text fills the box,
+// border touching top/bottom of the glyphs. leading-none removes the font's
+// default line-height slack; py stays at 0.
 const tabClass = (active: boolean) =>
-  `font-headline cursor-pointer rounded-md border-2 border-black px-4 py-2 text-sm font-bold tracking-wide uppercase ${
+  `font-headline cursor-pointer border-4 border-black px-2 py-0 text-xl leading-none font-bold tracking-wide uppercase sm:text-2xl ${
     active ? 'bg-black text-white' : 'bg-white text-black hover:bg-zinc-100'
   }`
 
+// Day tabs read noticeably larger than the other filter rows in the design.
+const dayTabClass = (active: boolean) =>
+  `font-headline cursor-pointer border-4 border-black px-3 py-0 text-3xl leading-none font-bold tracking-wide uppercase sm:text-4xl ${
+    active ? 'bg-black text-white' : 'bg-white text-black hover:bg-zinc-100'
+  }`
+
+export type EventTypeStyle = { id: number; name: string; iconUrl: string | null; color: string }
+
+// border-dashed's dash rhythm is coarse and browser-dependent — a repeating
+// gradient gives the tight, even dashes the design uses instead.
+function DashedLine() {
+  return (
+    <div
+      aria-hidden
+      className="my-4 h-px mx-[calc(50%-50vw)] opacity-60"
+      style={{
+        backgroundImage:
+          'repeating-linear-gradient(to right, white 0, white 14px, transparent 14px, transparent 24px)',
+      }}
+    />
+  )
+}
+
 export function ProgramView({ days }: { days: ProgramDay[] }) {
-  const [view, setView] = useState<'list' | 'map'>('list')
+  const [view, setView] = useState<'list' | 'map'>('map')
   const [dayKey, setDayKey] = useState<string | null>(null) // null = all days
   const [eventTypeId, setEventTypeId] = useState<number | null>(null) // null = all types
 
   const eventTypes = useMemo(() => {
-    const byId = new Map<number, string>()
-    for (const day of days) for (const e of day.events) byId.set(e.eventType.id, e.eventType.name)
-    return [...byId.entries()]
-      .map(([id, name]) => ({ id, name }))
-      .sort((a, b) => a.name.localeCompare(b.name))
+    const byId = new Map<number, EventTypeStyle>()
+    for (const day of days)
+      for (const e of day.events) byId.set(e.eventType.id, e.eventType)
+    return [...byId.values()].sort((a, b) => a.name.localeCompare(b.name))
   }, [days])
 
   const filteredDays = useMemo(
@@ -55,27 +80,33 @@ export function ProgramView({ days }: { days: ProgramDay[] }) {
 
   return (
     <div className="flex flex-col gap-5">
+      <DashedLine />
+
       <div className="flex flex-wrap gap-2">
-        <button type="button" onClick={() => setView('list')} className={tabClass(view === 'list')}>
-          Not map
-        </button>
         <button type="button" onClick={() => setView('map')} className={tabClass(view === 'map')}>
           Map
+        </button>
+        <button type="button" onClick={() => setView('list')} className={tabClass(view === 'list')}>
+          Not map
         </button>
       </div>
 
       <div className="flex flex-wrap gap-2">
-        <button type="button" onClick={() => setDayKey(null)} className={tabClass(dayKey === null)}>
+        <button
+          type="button"
+          onClick={() => setDayKey(null)}
+          className={dayTabClass(dayKey === null)}
+        >
           All days
         </button>
-        {days.map((d) => (
+        {days.map((d, i) => (
           <button
             key={d.key}
             type="button"
             onClick={() => setDayKey(d.key)}
-            className={tabClass(dayKey === d.key)}
+            className={dayTabClass(dayKey === d.key)}
           >
-            {d.label}
+            Day {i + 1}
           </button>
         ))}
       </div>
@@ -102,6 +133,8 @@ export function ProgramView({ days }: { days: ProgramDay[] }) {
         </div>
       )}
 
+      <DashedLine />
+
       {filteredDays.length === 0 && (
         <p className="font-body text-white">No events match this filter.</p>
       )}
@@ -109,8 +142,22 @@ export function ProgramView({ days }: { days: ProgramDay[] }) {
       {view === 'list' ? (
         <ProgramList days={filteredDays} />
       ) : (
-        <ProgramMap days={filteredDays} />
+        <ProgramMap days={filteredDays} eventTypes={eventTypes} />
       )}
+
+      <DashedLine />
+
+      <div className="bg-black px-2 py-1">
+        <p className="font-display text-base text-white sm:text-md">
+          Over the course of several days, the festival spreads across different spots in
+          Belgrade, bringing together skaters, artists, musicians, filmmakers, and everyone who
+          wants to be part of the community. The program includes skate sessions, live music,
+          exhibitions, film screenings, workshops, talks, and plenty of moments that happen
+          naturally along the way.
+        </p>
+      </div>
+
+      <DashedLine />
     </div>
   )
 }
@@ -138,6 +185,14 @@ function ProgramList({ days }: { days: ProgramDay[] }) {
               <span className="font-body w-24 shrink-0 font-semibold text-white">
                 {event.timeRange}
               </span>
+              {event.eventType.iconUrl && (
+                <img
+                  src={event.eventType.iconUrl}
+                  alt={event.eventType.name}
+                  title={event.eventType.name}
+                  className="h-8 w-8 shrink-0 object-contain"
+                />
+              )}
               <div className="font-body min-w-0 flex-1 text-white">
                 <p className="font-bold">{event.title}</p>
                 {event.description && (
@@ -155,7 +210,37 @@ function ProgramList({ days }: { days: ProgramDay[] }) {
   )
 }
 
-function ProgramMap({ days }: { days: ProgramDay[] }) {
+// Teardrop pin colored per event type, with a black backing circle and the
+// type's icon shown in its own native colors on top (no color filter).
+function pinIcon(L: typeof Leaflet, color: string, iconUrl: string | null) {
+  const r = 25 // head radius
+  const h = 81 // total pin height
+  const d = r * 2 // head diameter
+  const innerR = 19 // black inner circle radius
+  const iconSize = 27
+  const iconOffset = r - iconSize / 2
+
+  const icon = iconUrl
+    ? `<img src="${iconUrl}" style="position:absolute;top:${iconOffset}px;left:${iconOffset}px;width:${iconSize}px;height:${iconSize}px;object-fit:contain;border-radius:50%;" />`
+    : ''
+  return L.divIcon({
+    className: '',
+    html:
+      `<div style="position:relative;width:${d}px;height:${h}px;">` +
+      `<svg width="${d}" height="${h}" viewBox="0 0 ${d} ${h}" xmlns="http://www.w3.org/2000/svg">` +
+      // straight tangent lines from the tip to the circle (not bezier curves
+      // that bulge past the circle's own width), with the tip corner itself
+      // rounded off via a small quadratic curve instead of a sharp point
+      `<path d="M21.4 73.8Q25 81 28.6 73.8L47.4 36.2A25 25 0 1 0 2.6 36.2Z" fill="${color}" stroke="black" stroke-width="2"/>` +
+      `<circle cx="${r}" cy="${r}" r="${innerR}" fill="black"/>` +
+      `</svg>${icon}</div>`,
+    iconSize: [d, h],
+    iconAnchor: [r, 78],
+    popupAnchor: [0, -78],
+  })
+}
+
+function ProgramMap({ days, eventTypes }: { days: ProgramDay[]; eventTypes: EventTypeStyle[] }) {
   const containerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<Leaflet.Map | null>(null)
   const leafletRef = useRef<typeof Leaflet | null>(null)
@@ -169,9 +254,9 @@ function ProgramMap({ days }: { days: ProgramDay[] }) {
       if (cancelled || !containerRef.current || mapRef.current) return
       leafletRef.current = L
       const map = L.map(containerRef.current)
-      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
         attribution:
-          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
       }).addTo(map)
       mapRef.current = map
       setMapReady(true)
@@ -194,6 +279,7 @@ function ProgramMap({ days }: { days: ProgramDay[] }) {
     for (const marker of markersRef.current) marker.remove()
     markersRef.current = []
 
+    const styleByTypeId = new Map(eventTypes.map((t) => [t.id, t]))
     const byLocation = new Map<
       number,
       { location: ProgramEvent['location']; events: ProgramEvent[] }
@@ -208,12 +294,10 @@ function ProgramMap({ days }: { days: ProgramDay[] }) {
 
     const points: [number, number][] = []
     for (const { location, events } of byLocation.values()) {
-      const marker = L.circleMarker([location.lat, location.lng], {
-        radius: 9,
-        weight: 2,
-        color: '#1d4ed8',
-        fillColor: '#3b82f6',
-        fillOpacity: 0.8,
+      // Multiple events can share a location — pin color/icon come from the first one.
+      const style = styleByTypeId.get(events[0].eventType.id)
+      const marker = L.marker([location.lat, location.lng], {
+        icon: pinIcon(L, style?.color ?? '#3b82f6', style?.iconUrl ?? null),
       }).addTo(map)
       // One popup per location listing every matching event held there;
       // the title links to the event page
@@ -234,12 +318,33 @@ function ProgramMap({ days }: { days: ProgramDay[] }) {
 
     if (points.length === 1) map.setView(points[0], 15)
     else if (points.length > 1) map.fitBounds(points, { padding: [40, 40] })
-  }, [days, mapReady])
+  }, [days, eventTypes, mapReady])
 
   return (
-    <div
-      ref={containerRef}
-      className="isolate z-0 h-96 w-full rounded-xl border border-zinc-200 sm:h-120"
-    />
+    <div className="flex flex-col gap-9">
+      <div
+        ref={containerRef}
+        className="isolate z-0 h-96 w-full border border-black sm:h-120"
+      />
+      {eventTypes.length > 0 && (
+        <div className="grid grid-cols-1 gap-px bg-white sm:grid-cols-2">
+          {eventTypes.map((t) => (
+            <div key={t.id} className="flex items-stretch gap-3 bg-black">
+              <span
+                className="flex w-20 shrink-0 items-center justify-center"
+                style={{ backgroundColor: t.color }}
+              >
+                {t.iconUrl && (
+                  <img src={t.iconUrl} alt="" className="h-12 w-12 object-contain" />
+                )}
+              </span>
+              <span className="font-display flex items-center py-4 text-base text-white uppercase">
+                {t.name}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
   )
 }

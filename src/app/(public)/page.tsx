@@ -1,17 +1,11 @@
 import Image from 'next/image'
-import { prisma } from '@/lib/prisma'
 
-export default async function HomePage() {
-  const sponsors = await prisma.sponsor.findMany({
-    orderBy: { name: 'asc' },
-    include: { logo: true },
-  })
-
+export default function HomePage() {
   return (
-    <div className="mx-auto max-w-3xl">
+    <div className="relative left-1/2 -mt-8 -mb-8 min-h-screen w-screen -translate-x-1/2 bg-black pb-8">
       {/* Flattened export from Figma (photo + decorative marks — all static),
           with the title and date kept as real text for SEO/crawlability. */}
-      <div className="relative left-1/2 -mt-8 w-screen -translate-x-1/2">
+      <div className="relative">
         <Image
           src="/hero/hero-bg.png"
           alt=""
@@ -34,24 +28,6 @@ export default async function HomePage() {
           10-13. Septeber 2026
         </p>
       </div>
-
-      {sponsors.length > 0 && (
-        <section className="mt-12">
-          <h2 className="text-xl font-bold">Sponsors</h2>
-          <div className="mt-5 flex flex-wrap items-center gap-x-8 gap-y-5">
-            {sponsors.map((sponsor) => (
-              <figure key={sponsor.id} className="flex flex-col items-center gap-2">
-                <img
-                  src={sponsor.logo.url}
-                  alt={`${sponsor.name} logo`}
-                  className="h-14 w-auto max-w-32 object-contain"
-                />
-                <figcaption className="text-sm text-zinc-600">{sponsor.name}</figcaption>
-              </figure>
-            ))}
-          </div>
-        </section>
-      )}
     </div>
   )
 }

@@ -1,24 +1,39 @@
+import { DashedLine } from '../_components/dashed-line'
+import { SectionHeader } from '../_components/section-header'
+
 export default function AboutPage() {
   return (
-    <article className="mx-auto max-w-3xl">
-      <h1 className="text-3xl font-bold">About us</h1>
-      <div className="mt-6 flex flex-col gap-4 text-zinc-700">
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
-          incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-          exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-        </p>
-        <p>
-          Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-          fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-          culpa qui officia deserunt mollit anim id est laborum.
-        </p>
-        <p>
-          Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium
-          doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore
-          veritatis et quasi architecto beatae vitae dicta sunt explicabo.
-        </p>
-      </div>
-    </article>
+    <>
+      <SectionHeader
+        title="About us"
+        accentColor="#518ea1"
+        icon="/icons/navbar/about.svg"
+        photoSrc="/about/header-strip.png"
+      />
+
+      <DashedLine />
+
+      <article>
+        <div className="bg-black px-4 py-2">
+          <h2 className="font-headline text-xl font-bold text-white uppercase sm:text-2xl">
+            Samit Nesvrstanih
+          </h2>
+        </div>
+        <div className="font-body mt-4 flex flex-col gap-4 text-black">
+          <p>
+            Samit Nesvrstanih is an independent, community-driven skateboarding festival based
+            in Belgrade, Serbia.
+          </p>
+          <p>
+            Since its beginning, the festival has brought together skateboarding, contemporary
+            art, music, film, design, and DIY culture through a growing network of local and
+            international collaborators, celebrating creativity, shared spaces, and the people
+            who make them possible.
+          </p>
+        </div>
+      </article>
+
+      <DashedLine />
+    </>
   )
 }
