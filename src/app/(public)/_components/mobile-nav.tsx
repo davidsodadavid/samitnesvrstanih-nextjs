@@ -14,9 +14,10 @@ export function MobileNav() {
         <Link
           href={siteBrand.href}
           onClick={() => setOpen(false)}
-          className="font-display text-xs text-white"
+          className="flex items-center gap-2"
         >
-          {siteBrand.label}
+          <img src="/logo.svg" alt="" className="h-5 w-auto" />
+          <span className="font-display text-xs text-white">{siteBrand.label}</span>
         </Link>
         <button
           type="button"

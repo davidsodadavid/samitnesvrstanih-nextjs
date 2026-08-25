@@ -1,6 +1,7 @@
 import ReactMarkdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
 import remarkBreaks from 'remark-breaks'
+import { preserveBlankLines } from '@/lib/markdown-blank-lines'
 
 // prose-invert's default body text is a mid-gray (--tw-prose-invert-body),
 // which reads fine on a near-black background but is too low-contrast against
@@ -21,7 +22,7 @@ export function Markdown({ children, invert = false }: { children: string; inver
       className={`prose ${invert ? invertVars : 'prose-zinc'} prose-headings:mt-2! prose-headings:mb-1! prose-p:my-1! prose-ul:my-1! prose-ol:my-1! prose-blockquote:my-1.5! max-w-none`}
     >
       <ReactMarkdown remarkPlugins={[remarkBreaks]} rehypePlugins={[rehypeRaw]}>
-        {children}
+        {preserveBlankLines(children)}
       </ReactMarkdown>
     </div>
   )

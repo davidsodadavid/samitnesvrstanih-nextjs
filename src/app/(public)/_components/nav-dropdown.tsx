@@ -50,7 +50,7 @@ export function NavDropdown({ group }: { group: NavGroup }) {
             alt=""
             className="h-4 w-auto lg:h-5 xl:h-6 2xl:h-7"
           />
-          <span className="font-display text-xs text-white lg:text-sm xl:text-lg 2xl:text-[22px]">
+          <span className="font-display text-xs leading-none text-white lg:text-sm xl:text-lg 2xl:text-[22px]">
             {group.label}
           </span>
         </span>

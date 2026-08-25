@@ -4,6 +4,7 @@ import { useRef, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
 import remarkBreaks from 'remark-breaks'
+import { preserveBlankLines } from '@/lib/markdown-blank-lines'
 
 function extractYouTubeId(input: string): string | null {
   // Bare video ID pasted directly
@@ -189,7 +190,7 @@ export function MarkdownEditor({
         <div className="prose prose-zinc prose-sm prose-headings:mt-2! prose-headings:mb-1! prose-p:my-1! prose-ul:my-1! prose-ol:my-1! prose-blockquote:my-1.5! min-h-48 max-w-none px-4 py-3">
           {value.trim() ? (
             <ReactMarkdown remarkPlugins={[remarkBreaks]} rehypePlugins={[rehypeRaw]}>
-              {value}
+              {preserveBlankLines(value)}
             </ReactMarkdown>
           ) : (
             <p className="text-zinc-400">Nothing to preview yet.</p>

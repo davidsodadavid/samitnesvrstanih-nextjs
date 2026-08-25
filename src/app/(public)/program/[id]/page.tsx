@@ -39,8 +39,8 @@ export default async function EventPage({ params }: { params: Promise<{ id: stri
         <DashedLine />
 
         <article>
-          <div className="flex flex-wrap items-center justify-between gap-4 bg-black px-4 py-3">
-            <span className="font-headline flex items-center gap-3 text-2xl font-bold text-white uppercase sm:text-3xl">
+          <div className="flex flex-col gap-1 bg-black px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+            <span className="font-headline flex items-center gap-3 text-2xl font-bold text-white uppercase sm:min-w-0 sm:flex-1 sm:text-3xl">
               {event.event_type.icon && (
                 <img
                   src={event.event_type.icon.url}
@@ -48,9 +48,9 @@ export default async function EventPage({ params }: { params: Promise<{ id: stri
                   className="h-8 w-8 shrink-0 object-contain"
                 />
               )}
-              {event.title}
+              <span className="min-w-0">{event.title}</span>
             </span>
-            <span className="font-body text-right text-sm text-white sm:text-base">
+            <span className="font-body text-right text-sm text-white sm:shrink-0 sm:text-base">
               {dayFormat.format(event.start_at)}
               <br />
               {timeFormat.format(event.start_at)}–{timeFormat.format(event.ends_at)}

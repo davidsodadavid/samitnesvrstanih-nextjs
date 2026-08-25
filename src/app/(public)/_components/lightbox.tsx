@@ -1,6 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 
 export type LightboxImage = { url: string; author?: string | null }
 
@@ -43,9 +44,14 @@ export function Lightbox({
   if (!image) return null
 
   const navButtonClass =
-    'absolute top-1/2 -translate-y-1/2 cursor-pointer bg-black/50 px-3.5 py-2 text-2xl leading-none text-white hover:bg-black/70'
+    'absolute top-1/2 -translate-y-1/2 cursor-pointer bg-black/50 px-4 py-3 text-4xl leading-none text-white hover:bg-black/70'
 
-  return (
+  // Portaled to <body> — several pages wrap their content in a full-bleed
+  // container using a `translate` transform (for the edge-to-edge layout
+  // trick), and any transform on an ancestor turns `position: fixed`
+  // descendants into something positioned relative to that ancestor instead
+  // of the viewport, which is what made the lightbox scroll with the page.
+  return createPortal(
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4"
       onClick={onClose}
@@ -54,7 +60,7 @@ export function Lightbox({
         type="button"
         onClick={onClose}
         aria-label="Close"
-        className="absolute top-4 right-4 cursor-pointer bg-black/50 px-3 py-1.5 text-xl leading-none text-white hover:bg-black/70"
+        className="absolute top-4 right-4 cursor-pointer bg-black/50 px-3.5 py-2 text-2xl leading-none text-white hover:bg-black/70"
       >
         ✕
       </button>
@@ -97,7 +103,8 @@ export function Lightbox({
           </button>
         </>
       )}
-    </div>
+    </div>,
+    document.body,
   )
 }
 
