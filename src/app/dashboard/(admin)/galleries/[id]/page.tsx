@@ -14,7 +14,10 @@ export default async function EditGalleryPage({
   const [{ id }, { error }] = await Promise.all([params, searchParams])
   const gallery = await prisma.gallery.findUnique({
     where: { id: Number(id) },
-    include: { photos: { select: { id: true, url: true, author: true } } },
+    include: {
+      photos: { select: { id: true, url: true, author: true } },
+      image: { select: { id: true, url: true, key: true } },
+    },
   })
   if (!gallery) notFound()
 
@@ -30,7 +33,12 @@ export default async function EditGalleryPage({
               : undefined
         }
       />
-      <GalleryForm action={updateGallery} gallery={gallery} selectedPhotos={gallery.photos} />
+      <GalleryForm
+        action={updateGallery}
+        gallery={gallery}
+        selectedPhotos={gallery.photos}
+        image={gallery.image}
+      />
     </>
   )
 }

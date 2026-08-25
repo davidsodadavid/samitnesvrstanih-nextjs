@@ -1,16 +1,18 @@
 import { Field, FormCard, SubmitButton, TextInput } from '../_components/form'
-import { PhotoMultiPicker } from '../_components/media-picker'
-import type { PhotoItem } from '../_components/media-types'
+import { ImagePicker, PhotoMultiPicker } from '../_components/media-picker'
+import type { ImageItem, PhotoItem } from '../_components/media-types'
 import type { Gallery } from '@/generated/prisma/client'
 
 export function GalleryForm({
   action,
   gallery,
   selectedPhotos,
+  image,
 }: {
   action: (formData: FormData) => Promise<void>
   gallery?: Gallery
   selectedPhotos?: PhotoItem[]
+  image?: ImageItem | null
 }) {
   return (
     <FormCard action={action}>
@@ -33,6 +35,9 @@ export function GalleryForm({
           />
         </Field>
       </div>
+      <Field label="Link image (optional)">
+        <ImagePicker name="image_id" initial={image} />
+      </Field>
       <Field label="Photos">
         <PhotoMultiPicker initialSelected={selectedPhotos} />
       </Field>

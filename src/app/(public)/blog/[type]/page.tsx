@@ -17,10 +17,12 @@ export default async function BlogListPage({
   const blogType = BLOG_TYPES[type]
   if (!blogType) notFound()
 
-  // Reuse the navbar's per-section color/icon so the header matches it.
-  const blogGroup = navItems.find((item) => item.type === 'group' && item.label === 'ARCHIVE')
-  const navItem =
-    blogGroup?.type === 'group' ? blogGroup.items.find((item) => item.href === `/blog/${type}`) : undefined
+  // Reuse the navbar's per-section color/icon so the header matches it —
+  // search every dropdown, since a content type can live in any of them.
+  const navItem = navItems
+    .filter((item) => item.type === 'group')
+    .flatMap((group) => group.items)
+    .find((item) => item.href === `/blog/${type}`)
   const firstPage = await fetchBlogPosts(blogType.type)
 
   return (

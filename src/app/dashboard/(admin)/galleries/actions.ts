@@ -10,8 +10,9 @@ function parseGallery(formData: FormData) {
   const year = Number(formData.get('year'))
   const authors = String(formData.get('authors') ?? '').trim()
   const photoIds = formData.getAll('photo_ids').map(Number)
+  const imageRaw = String(formData.get('image_id') ?? '')
   if (!Number.isInteger(year)) return null
-  return { year, authors: authors || null, photoIds }
+  return { year, authors: authors || null, photoIds, image_id: imageRaw ? Number(imageRaw) : null }
 }
 
 function isYearTaken(error: unknown) {
@@ -28,6 +29,7 @@ export async function createGallery(formData: FormData) {
       data: {
         year: data.year,
         authors: data.authors,
+        image_id: data.image_id,
         photos: { connect: data.photoIds.map((id) => ({ id })) },
       },
     })
@@ -51,6 +53,7 @@ export async function updateGallery(formData: FormData) {
       data: {
         year: data.year,
         authors: data.authors,
+        image_id: data.image_id,
         photos: { set: data.photoIds.map((photoId) => ({ id: photoId })) },
       },
     })

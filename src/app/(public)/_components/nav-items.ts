@@ -13,7 +13,7 @@ export type NavGroupItem = {
   label: string
   href: string | null
   accentColor: string
-  // Only some blog types have a dedicated icon asset today — the section
+  // Only some content types have a dedicated icon asset today — the section
   // header just omits the icon when this is unset.
   icon?: string
 }
@@ -29,6 +29,10 @@ export type NavGroup = {
 
 export type NavEntry = NavLink | NavGroup
 
+// Site brand link shown at the far left of the navbar, separate from the
+// centered nav items — always points home.
+export const siteBrand = { label: 'Summit Of The Non-Aligned', href: '/' }
+
 export const navItems: NavEntry[] = [
   {
     type: 'link',
@@ -39,16 +43,32 @@ export const navItems: NavEntry[] = [
     accentColor: '#ff3c21',
   },
   {
-    type: 'link',
+    type: 'group',
     label: 'GALLERY',
-    href: null,
     desktopIcon: '/icons/navbar/archive.svg',
     mobileIcon: '/icons/navbar-mobile/archive.svg',
     accentColor: '#6e9985',
+    items: [
+      { label: 'PHOTO', href: '/galleries', accentColor: '#6e9985' },
+      {
+        label: 'DESIGNS',
+        href: null,
+        accentColor: '#78793a',
+        icon: '/icons/navbar/designs.svg',
+      },
+      {
+        label: 'FILM',
+        href: '/blog/films',
+        accentColor: '#262525',
+        icon: '/icons/navbar/video.svg',
+      },
+    ],
   },
   {
     type: 'group',
-    label: 'ARCHIVE',
+    label: 'PAST EVENTS',
+    // TODO: the design uses a trophy icon for this trigger — no asset for it
+    // yet, reusing the old video icon as a placeholder until one is provided.
     desktopIcon: '/icons/navbar/video.svg',
     mobileIcon: '/icons/navbar-mobile/video.svg',
     accentColor: '#262525',
@@ -60,26 +80,14 @@ export const navItems: NavEntry[] = [
         accentColor: '#bae1c4',
         icon: '/icons/navbar/exhibitions.svg',
       },
-      {
-        label: 'FILM',
-        href: '/blog/films',
-        accentColor: '#262525',
-        icon: '/icons/navbar/video.svg',
-      },
       { label: 'WORKSHOPS', href: '/blog/workshops', accentColor: '#0f8a7d' },
       { label: 'CONCERTS', href: '/blog/concerts', accentColor: '#e0399a' },
       { label: 'DIY', href: '/diy', accentColor: '#7778b0', icon: '/icons/navbar/diy.svg' },
-      {
-        label: 'DESIGNS',
-        href: null,
-        accentColor: '#78793a',
-        icon: '/icons/navbar/designs.svg',
-      },
     ],
   },
   {
     type: 'link',
-    label: 'ABOUT US',
+    label: 'TEAM',
     href: '/about',
     desktopIcon: '/icons/navbar/about.svg',
     mobileIcon: '/icons/navbar-mobile/about.svg',

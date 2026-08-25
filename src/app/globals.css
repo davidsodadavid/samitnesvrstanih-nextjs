@@ -22,14 +22,14 @@ body {
    orange border (a black one disappears against the dark map background),
    and the connector tip dropped for a cleaner geometric shape. */
 .leaflet-popup-content-wrapper {
-  padding: 0;
+  padding: 0 !important;
   border-radius: 0 !important;
   border: 3px solid #ff3c21;
   box-shadow: none;
   background: black !important;
 }
 .leaflet-popup-content {
-  margin: 0;
+  margin: 0 !important;
   width: auto !important;
   line-height: normal;
 }
@@ -57,4 +57,12 @@ body {
 }
 .leaflet-popup-content a:hover {
   background: rgba(255, 255, 255, 0.12);
+}
+/* Thin white seams between map tiles: a known Leaflet/browser issue where
+   subpixel rounding during pan/zoom leaves rounding gaps between adjacent
+   tile images. Forcing each tile onto its own GPU compositing layer avoids
+   the rounding mismatch. */
+.leaflet-tile {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }

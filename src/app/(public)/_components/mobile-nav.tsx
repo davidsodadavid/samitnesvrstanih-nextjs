@@ -2,16 +2,22 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
-import { navItems } from './nav-items'
+import { navItems, siteBrand } from './nav-items'
 
-export function MobileNav({ archiveHref }: { archiveHref: string | null }) {
+export function MobileNav() {
   const [open, setOpen] = useState(false)
   const [expandedGroup, setExpandedGroup] = useState<string | null>(null)
 
   return (
     <div className="md:hidden">
       <div className="flex h-[42px] items-center justify-between bg-black px-4">
-        <span className="font-display text-xs text-white">Summit Of The Non Aligned</span>
+        <Link
+          href={siteBrand.href}
+          onClick={() => setOpen(false)}
+          className="font-display text-xs text-white"
+        >
+          {siteBrand.label}
+        </Link>
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
@@ -83,7 +89,6 @@ export function MobileNav({ archiveHref }: { archiveHref: string | null }) {
               )
             }
 
-            const href = item.label === 'GALLERY' ? archiveHref : item.href
             const content = (
               <>
                 <div className="w-2 shrink-0" style={{ backgroundColor: item.accentColor }} />
@@ -94,10 +99,10 @@ export function MobileNav({ archiveHref }: { archiveHref: string | null }) {
               </>
             )
 
-            return href ? (
+            return item.href ? (
               <Link
                 key={item.label}
-                href={href}
+                href={item.href}
                 onClick={() => setOpen(false)}
                 className="flex h-12 items-stretch border-t border-white first:border-t-0 active:bg-white active:[&_span]:text-black"
               >

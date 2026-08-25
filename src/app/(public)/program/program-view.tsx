@@ -302,14 +302,14 @@ function ProgramMap({ days, eventTypes }: { days: ProgramDay[]; eventTypes: Even
       // the popup (default Leaflet maxWidth is 300) so it doesn't get tall.
       marker.bindPopup(
         `<div class="w-[280px]">` +
-          `<div class="bg-[#ff3c21] px-2.5 py-1.5 pr-7">` +
+          `<div class="truncate bg-[#ff3c21] py-1.5 pr-7 pl-1.5">` +
           `<span class="font-headline text-xs font-bold text-black uppercase">${escapeHtml(location.name)}</span>` +
           `</div>` +
           `<div class="font-body flex flex-col text-xs">` +
           events
             .map(
               (event, i) =>
-                `<a href="/program/${event.id}" class="px-2.5 py-1${i > 0 ? ' border-t border-white/20' : ''}">` +
+                `<a href="/program/${event.id}" class="truncate py-1 pr-1.5 pl-1.5${i > 0 ? ' border-t border-white/20' : ''}">` +
                 `<span class="font-semibold">${event.timeRange}</span> — ${escapeHtml(event.title)}</a>`,
             )
             .join('') +

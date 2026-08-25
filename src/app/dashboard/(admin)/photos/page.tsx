@@ -42,9 +42,14 @@ export default async function PhotosPage({
           type="file"
           name="file"
           accept="image/*"
+          multiple
           required
           className="text-sm file:mr-3 file:cursor-pointer file:rounded-lg file:border file:border-zinc-300 file:bg-white file:px-3 file:py-1.5 file:text-sm file:font-semibold"
         />
+        <p className="text-xs text-zinc-500">
+          Select multiple files to upload them all at once — author and date only apply when
+          uploading a single photo.
+        </p>
         <div className="flex flex-col gap-3 sm:flex-row">
           <label className="flex flex-1 flex-col gap-1.5 text-sm font-semibold">
             Author (optional)
@@ -59,7 +64,7 @@ export default async function PhotosPage({
           type="submit"
           className="cursor-pointer justify-self-start rounded-lg bg-zinc-900 px-4 py-2 text-sm font-semibold text-white hover:bg-zinc-700"
         >
-          Upload photo
+          Upload photo(s)
         </button>
       </form>
 

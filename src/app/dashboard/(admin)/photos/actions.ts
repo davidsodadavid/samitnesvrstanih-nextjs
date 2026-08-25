@@ -8,18 +8,30 @@ import { deleteFromR2, uploadToR2 } from '@/lib/r2'
 
 export async function uploadPhoto(formData: FormData) {
   await requireAdmin()
-  const file = formData.get('file')
+  const files = formData.getAll('file').filter((f): f is File => f instanceof File && f.size > 0)
   const author = String(formData.get('author') ?? '').trim()
   const date = String(formData.get('date') ?? '')
 
-  if (!(file instanceof File) || file.size === 0) {
+  if (files.length === 0) {
     redirect('/dashboard/photos?error=missing-fields')
   }
 
-  const { key, url } = await uploadToR2(file, 'photos')
-  await prisma.photo.create({
-    data: { key, url, author: author || null, date: date ? new Date(date) : null },
-  })
+  // Author/date only make sense for a single photo — a batch upload skips them.
+  const single = files.length === 1
+
+  await Promise.all(
+    files.map(async (file) => {
+      const { key, url } = await uploadToR2(file, 'photos')
+      await prisma.photo.create({
+        data: {
+          key,
+          url,
+          author: single ? author || null : null,
+          date: single && date ? new Date(date) : null,
+        },
+      })
+    }),
+  )
 
   revalidatePath('/dashboard/photos')
 }

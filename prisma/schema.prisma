@@ -49,10 +49,12 @@ model Photo {
 }
 
 model Gallery {
-  id      Int     @id @default(autoincrement())
-  year    Int     @unique
-  authors String? // free-form credit line, independent of Photo.author
-  photos  Photo[]
+  id       Int     @id @default(autoincrement())
+  year     Int     @unique
+  authors  String? // free-form credit line, independent of Photo.author
+  photos   Photo[]
+  image    Image?  @relation(fields: [image_id], references: [id]) // shown as the link/cover on the frontend
+  image_id Int?
 
   @@map("galleries")
 }
@@ -125,6 +127,7 @@ model Image {
   events          Event[]
   sponsors        Sponsor[]
   event_types     EventType[]
+  galleries       Gallery[]
 
   @@map("images")
 }

@@ -5,9 +5,9 @@ import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import type { NavGroup } from './nav-items'
 
-export function NavBlogDropdown({ group }: { group: NavGroup }) {
+export function NavDropdown({ group }: { group: NavGroup }) {
   const [open, setOpen] = useState(false)
-  const [panelPos, setPanelPos] = useState({ top: 0, left: 0 })
+  const [panelPos, setPanelPos] = useState({ top: 0, left: 0, width: 0 })
   const buttonRef = useRef<HTMLButtonElement>(null)
   const panelRef = useRef<HTMLDivElement>(null)
 
@@ -17,7 +17,7 @@ export function NavBlogDropdown({ group }: { group: NavGroup }) {
     const updatePosition = () => {
       const rect = buttonRef.current?.getBoundingClientRect()
       if (!rect) return
-      setPanelPos({ top: rect.bottom, left: rect.left + rect.width / 2 })
+      setPanelPos({ top: rect.bottom, left: rect.left, width: rect.width })
     }
     updatePosition()
 
@@ -42,7 +42,7 @@ export function NavBlogDropdown({ group }: { group: NavGroup }) {
         ref={buttonRef}
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="flex h-full items-center px-1 hover:opacity-80"
+        className="flex h-full cursor-pointer items-center px-1 hover:opacity-80"
       >
         <span className="flex items-center gap-1 whitespace-nowrap lg:gap-1.5 xl:gap-2">
           <img
@@ -60,8 +60,8 @@ export function NavBlogDropdown({ group }: { group: NavGroup }) {
         createPortal(
           <div
             ref={panelRef}
-            className="fixed z-50 flex w-56 -translate-x-1/2 flex-col bg-black shadow-lg"
-            style={{ top: panelPos.top, left: panelPos.left }}
+            className="fixed z-50 flex flex-col bg-black shadow-lg"
+            style={{ top: panelPos.top, left: panelPos.left, width: panelPos.width }}
           >
             {group.items.map((item) => {
               const row = (

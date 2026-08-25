@@ -12,14 +12,14 @@ export default async function GalleriesIndexPage() {
     select: { year: true },
   })
 
-  const navItem = navItems.find((item) => item.type === 'link' && item.label === 'GALLERY')
+  const navGroup = navItems.find((item) => item.type === 'group' && item.label === 'GALLERY')
 
   return (
     <div className="relative left-1/2 -mt-8 -mb-8 min-h-screen w-screen -translate-x-1/2 bg-black pb-8">
       <SectionHeader
         title="Gallery"
-        accentColor={navItem && navItem.type === 'link' ? navItem.accentColor : '#6e9985'}
-        icon={navItem && navItem.type === 'link' ? navItem.desktopIcon : undefined}
+        accentColor={navGroup?.accentColor ?? '#6e9985'}
+        icon={navGroup?.desktopIcon}
         photoSrc="/galleries/header-strip.png"
         cancelTopPadding={false}
       />
