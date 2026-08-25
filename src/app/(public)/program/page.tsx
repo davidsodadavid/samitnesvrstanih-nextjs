@@ -1,3 +1,4 @@
+import { EVENT_TIME_ZONE, parseLocalDateTime } from '@/lib/event-time'
 import { prisma } from '@/lib/prisma'
 import { ProgramView, type ProgramDay } from './program-view'
 
@@ -5,14 +6,20 @@ export const dynamic = 'force-dynamic'
 
 const YEAR = 2026
 
-// Events are entered as local wall-clock time in the dashboard — format them the
-// same way, on the server, so visitors in any timezone see the printed times.
+// Events are entered as wall-clock time in the festival's own timezone —
+// format them the same way regardless of the server's OS timezone, so
+// visitors everywhere see the printed times the organizers intended.
 const dayFormat = new Intl.DateTimeFormat('en-GB', {
+  timeZone: EVENT_TIME_ZONE,
   weekday: 'long',
   day: 'numeric',
   month: 'long',
 })
-const timeFormat = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit' })
+const timeFormat = new Intl.DateTimeFormat('en-GB', {
+  timeZone: EVENT_TIME_ZONE,
+  hour: '2-digit',
+  minute: '2-digit',
+})
 
 function ProgramHeader() {
   return (
@@ -40,7 +47,10 @@ function ProgramHeader() {
 export default async function ProgramPage() {
   const events = await prisma.event.findMany({
     where: {
-      start_at: { gte: new Date(YEAR, 0, 1), lt: new Date(YEAR + 1, 0, 1) },
+      start_at: {
+        gte: parseLocalDateTime(`${YEAR}-01-01T00:00`, EVENT_TIME_ZONE),
+        lt: parseLocalDateTime(`${YEAR + 1}-01-01T00:00`, EVENT_TIME_ZONE),
+      },
     },
     orderBy: { start_at: 'asc' },
     include: { location: true, event_type: { include: { icon: true } } },
@@ -57,7 +67,7 @@ export default async function ProgramPage() {
 
   const days: ProgramDay[] = []
   for (const event of events) {
-    const key = event.start_at.toDateString()
+    const key = dayFormat.format(event.start_at)
     let day = days.at(-1)
     if (!day || day.key !== key) {
       day = { key, label: dayFormat.format(event.start_at), events: [] }

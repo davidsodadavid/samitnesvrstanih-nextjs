@@ -1,9 +1,10 @@
+import { EVENT_TIME_ZONE, formatLocalDateTime } from '@/lib/event-time'
 import { prisma } from '@/lib/prisma'
 import { DeleteButton, EditLink, Empty, PageHeader, Table } from '../_components/list'
 import { deleteEvent } from './actions'
 
 function formatRange(start: Date, end: Date): string {
-  const fmt = (d: Date) => d.toISOString().slice(0, 16).replace('T', ' ')
+  const fmt = (d: Date) => formatLocalDateTime(d, EVENT_TIME_ZONE).replace('T', ' ')
   return `${fmt(start)} → ${fmt(end)}`
 }
 

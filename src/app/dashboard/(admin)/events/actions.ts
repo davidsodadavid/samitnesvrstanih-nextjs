@@ -3,13 +3,14 @@
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { requireAdmin } from '@/lib/auth'
+import { EVENT_TIME_ZONE, parseLocalDateTime } from '@/lib/event-time'
 import { prisma } from '@/lib/prisma'
 
 function parseEvent(formData: FormData) {
   const title = String(formData.get('title') ?? '').trim()
   const description = String(formData.get('description') ?? '')
-  const start_at = new Date(String(formData.get('start_at') ?? ''))
-  const ends_at = new Date(String(formData.get('ends_at') ?? ''))
+  const start_at = parseLocalDateTime(String(formData.get('start_at') ?? ''), EVENT_TIME_ZONE)
+  const ends_at = parseLocalDateTime(String(formData.get('ends_at') ?? ''), EVENT_TIME_ZONE)
   const location_id = Number(formData.get('location_id'))
   const event_type_id = Number(formData.get('event_type_id'))
   const imageRaw = String(formData.get('image_id') ?? '')

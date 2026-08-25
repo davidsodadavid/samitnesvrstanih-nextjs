@@ -9,12 +9,7 @@ import { MarkdownEditor } from '../_components/markdown-editor'
 import { ImagePicker } from '../_components/media-picker'
 import type { ImageItem } from '../_components/media-types'
 import type { Event, EventType, Location } from '@/generated/prisma/client'
-
-// datetime-local wants "YYYY-MM-DDTHH:mm" in local time
-function toDatetimeLocal(date: Date): string {
-  const local = new Date(date.getTime() - date.getTimezoneOffset() * 60_000)
-  return local.toISOString().slice(0, 16)
-}
+import { EVENT_TIME_ZONE, formatLocalDateTime } from '@/lib/event-time'
 
 export function EventForm({
   action,
@@ -40,7 +35,7 @@ export function EventForm({
           <TextInput
             type="datetime-local"
             name="start_at"
-            defaultValue={event ? toDatetimeLocal(event.start_at) : undefined}
+            defaultValue={event ? formatLocalDateTime(event.start_at, EVENT_TIME_ZONE) : undefined}
             required
           />
         </Field>
@@ -48,7 +43,7 @@ export function EventForm({
           <TextInput
             type="datetime-local"
             name="ends_at"
-            defaultValue={event ? toDatetimeLocal(event.ends_at) : undefined}
+            defaultValue={event ? formatLocalDateTime(event.ends_at, EVENT_TIME_ZONE) : undefined}
             required
           />
         </Field>

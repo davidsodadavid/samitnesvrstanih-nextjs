@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation'
+import { EVENT_TIME_ZONE } from '@/lib/event-time'
 import { prisma } from '@/lib/prisma'
 import { ZoomableImage } from '../../_components/lightbox'
 import { Markdown } from '../../_components/markdown'
@@ -6,11 +7,16 @@ import { Markdown } from '../../_components/markdown'
 export const dynamic = 'force-dynamic'
 
 const dayFormat = new Intl.DateTimeFormat('en-GB', {
+  timeZone: EVENT_TIME_ZONE,
   weekday: 'long',
   day: 'numeric',
   month: 'long',
 })
-const timeFormat = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit' })
+const timeFormat = new Intl.DateTimeFormat('en-GB', {
+  timeZone: EVENT_TIME_ZONE,
+  hour: '2-digit',
+  minute: '2-digit',
+})
 
 export default async function EventPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
