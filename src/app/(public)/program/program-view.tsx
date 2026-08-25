@@ -297,22 +297,25 @@ function ProgramMap({ days, eventTypes }: { days: ProgramDay[]; eventTypes: Even
         icon: pinIcon(L, style?.color ?? '#3b82f6', style?.iconUrl ?? null),
       }).addTo(map)
       // One popup per location listing every matching event held there;
-      // the whole row links to the event page, not just the title
+      // the whole row links to the event page, not just the title. Locations
+      // can host a lot of events, so keep text and padding tight and widen
+      // the popup (default Leaflet maxWidth is 300) so it doesn't get tall.
       marker.bindPopup(
-        `<div class="min-w-[200px]">` +
-          `<div class="bg-[#ff3c21] px-3 py-2 pr-7">` +
-          `<span class="font-headline text-sm font-bold text-black uppercase">${escapeHtml(location.name)}</span>` +
+        `<div class="w-[280px]">` +
+          `<div class="bg-[#ff3c21] px-2.5 py-1.5 pr-7">` +
+          `<span class="font-headline text-xs font-bold text-black uppercase">${escapeHtml(location.name)}</span>` +
           `</div>` +
-          `<div class="font-body flex flex-col text-sm">` +
+          `<div class="font-body flex flex-col text-xs">` +
           events
             .map(
               (event, i) =>
-                `<a href="/program/${event.id}" class="px-3 py-1.5${i > 0 ? ' border-t border-white/20' : ''}">` +
+                `<a href="/program/${event.id}" class="px-2.5 py-1${i > 0 ? ' border-t border-white/20' : ''}">` +
                 `<span class="font-semibold">${event.timeRange}</span> — ${escapeHtml(event.title)}</a>`,
             )
             .join('') +
           `</div>` +
           `</div>`,
+        { maxWidth: 320, minWidth: 280 },
       )
       markersRef.current.push(marker)
       points.push([location.lat, location.lng])
