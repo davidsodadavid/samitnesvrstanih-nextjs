@@ -37,12 +37,12 @@ export function GalleryGrid({ year, initial }: { year: number; initial: GalleryP
   }, [year, nextCursor])
 
   if (photos.length === 0) {
-    return <p className="text-zinc-500">No photos yet.</p>
+    return <p className="font-body text-white/60">No photos yet.</p>
   }
 
   return (
     <>
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-1 bg-black sm:grid-cols-3 lg:grid-cols-4">
         {photos.map((photo, index) => (
           <button
             key={photo.id}
@@ -55,13 +55,13 @@ export function GalleryGrid({ year, initial }: { year: number; initial: GalleryP
               alt={photo.author ? `Photo by ${photo.author}` : 'Photo'}
               title={photo.author ?? undefined}
               loading="lazy"
-              className="h-44 w-full rounded-lg object-cover sm:h-56"
+              className="h-32 w-full object-cover sm:h-40"
             />
           </button>
         ))}
       </div>
       {nextCursor !== null && (
-        <div ref={sentinelRef} className="py-6 text-center text-sm text-zinc-500">
+        <div ref={sentinelRef} className="py-6 text-center text-sm text-white/60">
           Loading…
         </div>
       )}

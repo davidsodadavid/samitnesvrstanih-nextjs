@@ -23,7 +23,7 @@ export default async function DiyListPage() {
             <Link
               key={diy.id}
               href={`/diy/${diy.id}`}
-              className="group overflow-hidden rounded-xl border border-zinc-200 bg-white transition-shadow hover:shadow-md"
+              className="group overflow-hidden border border-zinc-200 bg-white transition-shadow hover:shadow-md"
             >
               {diy.photos[0] ? (
                 <img src={diy.photos[0].url} alt="" className="h-44 w-full object-cover" />

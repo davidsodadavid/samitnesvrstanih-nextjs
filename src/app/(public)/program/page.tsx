@@ -21,7 +21,7 @@ const timeFormat = new Intl.DateTimeFormat('en-GB', {
   minute: '2-digit',
 })
 
-function ProgramHeader() {
+export function ProgramHeader() {
   return (
     <>
       <div className="relative flex h-24 items-center justify-center bg-black sm:h-32 md:h-40">

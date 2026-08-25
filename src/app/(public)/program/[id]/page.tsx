@@ -3,6 +3,9 @@ import { EVENT_TIME_ZONE } from '@/lib/event-time'
 import { prisma } from '@/lib/prisma'
 import { ZoomableImage } from '../../_components/lightbox'
 import { Markdown } from '../../_components/markdown'
+import { DashedLine } from '../program-view'
+import { ProgramHeader } from '../page'
+import { LocationMap } from './location-map'
 
 export const dynamic = 'force-dynamic'
 
@@ -25,26 +28,66 @@ export default async function EventPage({ params }: { params: Promise<{ id: stri
 
   const event = await prisma.event.findUnique({
     where: { id: eventId },
-    include: { location: true, event_type: true, image: true },
+    include: { location: true, event_type: { include: { icon: true } }, image: true },
   })
   if (!event) notFound()
 
   return (
-    <article className="mx-auto max-w-3xl">
-      <h1 className="text-3xl font-bold">{event.title}</h1>
-      <p className="mt-2 text-sm text-zinc-500">
-        {dayFormat.format(event.start_at)} · {timeFormat.format(event.start_at)}–
-        {timeFormat.format(event.ends_at)} · {event.location.name}
-        <span className="ml-2 rounded-full bg-zinc-100 px-2.5 py-0.5 text-xs font-semibold text-zinc-700">
-          {event.event_type.name}
-        </span>
-      </p>
-      {event.image && (
-        <ZoomableImage src={event.image.url} className="mt-6 w-full rounded-xl object-cover" />
-      )}
-      <div className="mt-6">
-        <Markdown>{event.description}</Markdown>
+    <div className="relative left-1/2 -mt-8 -mb-8 min-h-screen w-screen -translate-x-1/2 bg-[#ff3c21] pb-8">
+      <ProgramHeader />
+      <div className="mx-auto max-w-5xl px-4 py-8">
+        <DashedLine />
+
+        <article>
+          <div className="flex flex-wrap items-center justify-between gap-4 bg-black px-4 py-3">
+            <span className="font-headline flex items-center gap-3 text-2xl font-bold text-white uppercase sm:text-3xl">
+              {event.event_type.icon && (
+                <img
+                  src={event.event_type.icon.url}
+                  alt=""
+                  className="h-8 w-8 shrink-0 object-contain"
+                />
+              )}
+              {event.title}
+            </span>
+            <span className="font-body text-right text-sm text-white sm:text-base">
+              {dayFormat.format(event.start_at)}
+              <br />
+              {timeFormat.format(event.start_at)}–{timeFormat.format(event.ends_at)}
+            </span>
+          </div>
+
+          {event.description && (
+            <div className="mt-6">
+              <Markdown invert>{event.description}</Markdown>
+            </div>
+          )}
+
+          {event.image && (
+            <div className="mt-6">
+              <ZoomableImage src={event.image.url} className="w-full object-cover" />
+            </div>
+          )}
+        </article>
+
+        <DashedLine />
+
+        <div className="bg-black px-4 py-3">
+          <span className="font-headline text-xl font-bold text-white uppercase sm:text-2xl">
+            {event.location.name}
+          </span>
+        </div>
+        <div className="mt-4">
+          <LocationMap
+            lat={event.location.lat}
+            lng={event.location.lng}
+            color={event.event_type.color}
+            iconUrl={event.event_type.icon?.url ?? null}
+          />
+        </div>
+
+        <DashedLine />
       </div>
-    </article>
+    </div>
   )
 }

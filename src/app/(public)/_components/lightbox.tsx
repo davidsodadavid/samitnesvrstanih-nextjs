@@ -43,7 +43,7 @@ export function Lightbox({
   if (!image) return null
 
   const navButtonClass =
-    'absolute top-1/2 -translate-y-1/2 cursor-pointer rounded-full bg-black/50 px-3.5 py-2 text-2xl leading-none text-white hover:bg-black/70'
+    'absolute top-1/2 -translate-y-1/2 cursor-pointer bg-black/50 px-3.5 py-2 text-2xl leading-none text-white hover:bg-black/70'
 
   return (
     <div
@@ -54,7 +54,7 @@ export function Lightbox({
         type="button"
         onClick={onClose}
         aria-label="Close"
-        className="absolute top-4 right-4 cursor-pointer rounded-full bg-black/50 px-3 py-1.5 text-xl leading-none text-white hover:bg-black/70"
+        className="absolute top-4 right-4 cursor-pointer bg-black/50 px-3 py-1.5 text-xl leading-none text-white hover:bg-black/70"
       >
         ✕
       </button>
@@ -65,7 +65,7 @@ export function Lightbox({
         <img
           src={image.url}
           alt={image.author ? `Photo by ${image.author}` : 'Photo'}
-          className="max-h-[85vh] max-w-[90vw] rounded-lg object-contain"
+          className="max-h-[85vh] max-w-[90vw] object-contain"
         />
         {image.author && (
           <figcaption className="text-sm text-zinc-300">Photo by {image.author}</figcaption>
@@ -125,7 +125,7 @@ export function PhotoGrid({
               alt={photo.author ? `Photo by ${photo.author}` : 'Photo'}
               title={photo.author ?? undefined}
               loading="lazy"
-              className="h-40 w-full rounded-lg object-cover"
+              className="h-40 w-full object-cover"
             />
           </button>
         ))}

@@ -15,3 +15,46 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* Leaflet's default popup (rounded white box, drop shadow, serif close "x")
+   doesn't match the site's flat black/white brutalist look, and a light box
+   is too bright against the dark map tiles — squared off, dark, with an
+   orange border (a black one disappears against the dark map background),
+   and the connector tip dropped for a cleaner geometric shape. */
+.leaflet-popup-content-wrapper {
+  padding: 0;
+  border-radius: 0 !important;
+  border: 3px solid #ff3c21;
+  box-shadow: none;
+  background: black !important;
+}
+.leaflet-popup-content {
+  margin: 0;
+  width: auto !important;
+  line-height: normal;
+}
+.leaflet-popup-tip-container {
+  display: none;
+}
+.leaflet-popup-close-button {
+  top: 6px !important;
+  right: 8px !important;
+  font-family: var(--font-headline), Arial, sans-serif;
+  font-weight: 700;
+  font-size: 20px !important;
+  color: black !important;
+}
+.leaflet-popup-close-button:hover {
+  color: white !important;
+}
+/* leaflet.css is imported inside client components, so it loads after this
+   stylesheet and wins same-specificity ties — !important to actually override it.
+   Each event is a full-width link (not just its title) for a bigger click target. */
+.leaflet-popup-content a {
+  display: block;
+  color: white !important;
+  text-decoration: none !important;
+}
+.leaflet-popup-content a:hover {
+  background: rgba(255, 255, 255, 0.12);
+}

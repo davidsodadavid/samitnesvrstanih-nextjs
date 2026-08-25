@@ -1,5 +1,8 @@
 import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
+import { DashedLine } from '../../_components/dashed-line'
+import { navItems } from '../../_components/nav-items'
+import { SectionHeader } from '../../_components/section-header'
 import { fetchGalleryPhotos } from '../actions'
 import { GalleryGrid } from './gallery-grid'
 
@@ -18,14 +21,31 @@ export default async function GalleryPage({
   if (!gallery) notFound()
 
   const firstPage = await fetchGalleryPhotos(year)
+  const navItem = navItems.find((item) => item.type === 'link' && item.label === 'GALLERY')
 
   return (
-    <>
-      <h1 className="text-3xl font-bold">Gallery {year}</h1>
-      {gallery.authors && <p className="mt-2 text-sm text-zinc-500">Photos: {gallery.authors}</p>}
-      <div className="mt-6">
+    <div className="relative left-1/2 -mt-8 -mb-8 min-h-screen w-screen -translate-x-1/2 bg-black pb-8">
+      <SectionHeader
+        title="Gallery"
+        accentColor={navItem && navItem.type === 'link' ? navItem.accentColor : '#6e9985'}
+        icon={navItem && navItem.type === 'link' ? navItem.desktopIcon : undefined}
+        photoSrc="/galleries/header-strip.png"
+        cancelTopPadding={false}
+      />
+
+      <div className="mx-auto max-w-5xl px-4 py-8">
+        <DashedLine color="white" />
+
+        {gallery.authors && (
+          <p className="font-body mb-4 text-sm tracking-wide text-white uppercase">
+            Photos by: {gallery.authors}
+          </p>
+        )}
+
         <GalleryGrid year={year} initial={firstPage} />
+
+        <DashedLine color="white" />
       </div>
-    </>
+    </div>
   )
 }

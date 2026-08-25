@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import 'leaflet/dist/leaflet.css'
 import type * as Leaflet from 'leaflet'
@@ -41,7 +42,7 @@ export type EventTypeStyle = { id: number; name: string; iconUrl: string | null;
 
 // border-dashed's dash rhythm is coarse and browser-dependent — a repeating
 // gradient gives the tight, even dashes the design uses instead.
-function DashedLine() {
+export function DashedLine() {
   return (
     <div
       aria-hidden
@@ -176,13 +177,14 @@ function ProgramList({ days }: { days: ProgramDay[] }) {
             </span>
           </div>
           {day.events.map((event, j) => (
-            <div
+            <Link
               key={event.id}
-              className={`flex flex-col gap-2 px-4 py-4 sm:flex-row sm:items-start sm:gap-6 ${
+              href={`/program/${event.id}`}
+              className={`flex flex-col gap-2 px-4 py-4 hover:bg-white/10 sm:flex-row sm:items-center sm:gap-6 ${
                 j > 0 ? 'border-t border-dashed border-white/50' : ''
               }`}
             >
-              <span className="font-body w-24 shrink-0 font-semibold text-white">
+              <span className="font-body w-28 shrink-0 font-semibold whitespace-nowrap text-white">
                 {event.timeRange}
               </span>
               {event.eventType.iconUrl && (
@@ -193,16 +195,11 @@ function ProgramList({ days }: { days: ProgramDay[] }) {
                   className="h-8 w-8 shrink-0 object-contain"
                 />
               )}
-              <div className="font-body min-w-0 flex-1 text-white">
-                <p className="font-bold">{event.title}</p>
-                {event.description && (
-                  <p className="mt-1 whitespace-pre-wrap text-white/80">{event.description}</p>
-                )}
-              </div>
+              <p className="font-body min-w-0 flex-1 font-bold text-white">{event.title}</p>
               <span className="font-body text-right font-semibold text-white sm:w-64 sm:shrink-0">
                 {event.location.name}
               </span>
-            </div>
+            </Link>
           ))}
         </div>
       ))}
@@ -212,7 +209,7 @@ function ProgramList({ days }: { days: ProgramDay[] }) {
 
 // Teardrop pin colored per event type, with a black backing circle and the
 // type's icon shown in its own native colors on top (no color filter).
-function pinIcon(L: typeof Leaflet, color: string, iconUrl: string | null) {
+export function pinIcon(L: typeof Leaflet, color: string, iconUrl: string | null) {
   const r = 25 // head radius
   const h = 81 // total pin height
   const d = r * 2 // head diameter
@@ -300,16 +297,21 @@ function ProgramMap({ days, eventTypes }: { days: ProgramDay[]; eventTypes: Even
         icon: pinIcon(L, style?.color ?? '#3b82f6', style?.iconUrl ?? null),
       }).addTo(map)
       // One popup per location listing every matching event held there;
-      // the title links to the event page
+      // the whole row links to the event page, not just the title
       marker.bindPopup(
-        `<strong>${escapeHtml(location.name)}</strong>` +
-          `<div style="margin-top:8px">` +
+        `<div class="min-w-[200px]">` +
+          `<div class="bg-[#ff3c21] px-3 py-2 pr-7">` +
+          `<span class="font-headline text-sm font-bold text-black uppercase">${escapeHtml(location.name)}</span>` +
+          `</div>` +
+          `<div class="font-body flex flex-col text-sm">` +
           events
             .map(
-              (event) =>
-                `${event.timeRange} — <a href="/program/${event.id}" class="underline">${escapeHtml(event.title)}</a>`,
+              (event, i) =>
+                `<a href="/program/${event.id}" class="px-3 py-1.5${i > 0 ? ' border-t border-white/20' : ''}">` +
+                `<span class="font-semibold">${event.timeRange}</span> — ${escapeHtml(event.title)}</a>`,
             )
-            .join('<br>') +
+            .join('') +
+          `</div>` +
           `</div>`,
       )
       markersRef.current.push(marker)
@@ -328,8 +330,13 @@ function ProgramMap({ days, eventTypes }: { days: ProgramDay[]; eventTypes: Even
       />
       {eventTypes.length > 0 && (
         <div className="grid grid-cols-1 gap-px bg-white sm:grid-cols-2">
-          {eventTypes.map((t) => (
-            <div key={t.id} className="flex items-stretch gap-3 bg-black">
+          {eventTypes.map((t, i) => (
+            <div
+              key={t.id}
+              className={`flex items-stretch gap-3 bg-black ${
+                i === eventTypes.length - 1 && eventTypes.length % 2 === 1 ? 'sm:col-span-2' : ''
+              }`}
+            >
               <span
                 className="flex w-20 shrink-0 items-center justify-center"
                 style={{ backgroundColor: t.color }}

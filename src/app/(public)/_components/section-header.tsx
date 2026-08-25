@@ -17,14 +17,18 @@ export function SectionHeader({
   accentColor,
   icon,
   photoSrc,
+  cancelTopPadding = true,
 }: {
   title: string
   accentColor: string
   icon?: string | null
   photoSrc: string
+  // Pages that already cancel <main>'s top padding themselves (e.g. a
+  // full-bleed page background) should pass false to avoid doubling it up.
+  cancelTopPadding?: boolean
 }) {
   return (
-    <div className="-mt-8 mx-[calc(50%-50vw)]">
+    <div className={`${cancelTopPadding ? '-mt-8' : ''} mx-[calc(50%-50vw)]`}>
       <div
         className="relative flex h-24 items-center justify-center sm:h-32 md:h-40"
         style={{ backgroundColor: accentColor }}

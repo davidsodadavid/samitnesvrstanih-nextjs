@@ -25,7 +25,7 @@ export default function HomePage() {
           className="font-display absolute top-[92.65%] left-[41.3%] w-[19.76%] text-center whitespace-nowrap text-white"
           style={{ fontSize: 'clamp(0.625rem, 1.41vw, 1.6875rem)' }}
         >
-          10-13. Septeber 2026
+          10-13. September 2026
         </p>
       </div>
     </div>

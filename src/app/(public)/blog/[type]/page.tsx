@@ -18,7 +18,9 @@ export default async function BlogListPage({
   if (!blogType) notFound()
 
   // Reuse the navbar's per-section color/icon so the header matches it.
-  const navItem = navItems.find((item) => item.href === `/blog/${type}`)
+  const blogGroup = navItems.find((item) => item.type === 'group' && item.label === 'ARCHIVE')
+  const navItem =
+    blogGroup?.type === 'group' ? blogGroup.items.find((item) => item.href === `/blog/${type}`) : undefined
   const firstPage = await fetchBlogPosts(blogType.type)
 
   return (
@@ -26,7 +28,7 @@ export default async function BlogListPage({
       <SectionHeader
         title={blogType.title}
         accentColor={navItem?.accentColor ?? '#000'}
-        icon={navItem?.desktopIcon}
+        icon={navItem?.icon}
         photoSrc="/blog/header-strip.png"
       />
 

@@ -31,7 +31,7 @@ export default async function BlogPostPage({
       {post.thumbnail && (
         <ZoomableImage
           src={post.thumbnail.url}
-          className="mt-6 w-full rounded-xl object-cover"
+          className="mt-6 w-full object-cover"
         />
       )}
       <div className="mt-6">
