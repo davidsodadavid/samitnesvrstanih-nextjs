@@ -10,42 +10,28 @@ datasource db {
   provider = "postgresql"
 }
 
-enum PostType {
-  POST
-  FILM
-  EXHIBITION
-  WORKSHOP
-  CONCERT
-
-  @@map("post_type")
-}
-
-model Post {
-  id           Int      @id @default(autoincrement())
-  type         PostType
-  title        String
-  description  String // rendered as rich-text markdown
-  thumbnail    Image?   @relation(fields: [thumbnail_id], references: [id])
-  thumbnail_id Int?
-  photos       Photo[]
-  created_at   DateTime @default(now())
-  updated_at   DateTime @updatedAt
-
-  @@map("posts")
-}
-
-// Authored content photos (galleries, posts, DIYs) — distinct from utility Image uploads
+// Authored content photos (galleries) — distinct from utility Image uploads
 model Photo {
   id        Int       @id @default(autoincrement())
   url       String
   key       String    @unique // R2 object key, needed to delete the object from the bucket
   date      DateTime? @db.Date
   author    String?
-  posts     Post[]
   galleries Gallery[]
-  diys      Diy[]
 
   @@map("photos")
+}
+
+// Design assets uploaded via the admin dashboard — same shape as Photo, but
+// not tied to a Gallery.
+model Design {
+  id     Int       @id @default(autoincrement())
+  url    String
+  key    String    @unique // R2 object key, needed to delete the object from the bucket
+  date   DateTime? @db.Date
+  author String?
+
+  @@map("designs")
 }
 
 model Gallery {
@@ -93,20 +79,8 @@ model Location {
   lng         Float
   description String
   events      Event[]
-  diys        Diy[]
 
   @@map("locations")
-}
-
-model Diy {
-  id          Int      @id @default(autoincrement())
-  title       String
-  description String
-  location    Location @relation(fields: [location_id], references: [id])
-  location_id Int
-  photos      Photo[]
-
-  @@map("diys")
 }
 
 model Sponsor {
@@ -118,16 +92,15 @@ model Sponsor {
   @@map("sponsors")
 }
 
-// Utility images uploaded via the admin dashboard (thumbnails, event images, sponsor logos)
+// Utility images uploaded via the admin dashboard (event images, sponsor logos)
 model Image {
-  id              Int       @id @default(autoincrement())
-  url             String
-  key             String    @unique // R2 object key, needed to delete the object from the bucket
-  post_thumbnails Post[]
-  events          Event[]
-  sponsors        Sponsor[]
-  event_types     EventType[]
-  galleries       Gallery[]
+  id          Int         @id @default(autoincrement())
+  url         String
+  key         String      @unique // R2 object key, needed to delete the object from the bucket
+  events      Event[]
+  sponsors    Sponsor[]
+  event_types EventType[]
+  galleries   Gallery[]
 
   @@map("images")
 }

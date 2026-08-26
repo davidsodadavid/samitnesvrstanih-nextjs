@@ -9,13 +9,6 @@ export const dynamic = 'force-dynamic'
 
 const sections: { label: string; links: { href: string; label: string }[] }[] = [
   {
-    label: 'Content',
-    links: [
-      { href: '/dashboard/posts', label: 'Posts' },
-      { href: '/dashboard/diys', label: 'DIY' },
-    ],
-  },
-  {
     label: 'Program',
     links: [
       { href: '/dashboard/events', label: 'Events' },
@@ -27,6 +20,7 @@ const sections: { label: string; links: { href: string; label: string }[] }[] = 
     links: [
       { href: '/dashboard/galleries', label: 'Galleries' },
       { href: '/dashboard/photos', label: 'Photography' },
+      { href: '/dashboard/designs', label: 'Designs' },
       { href: '/dashboard/images', label: 'Images' },
     ],
   },

@@ -1,5 +1,3 @@
-// DESIGNS has no matching content type yet — rendered unlinked until one exists.
-
 export type NavLink = {
   type: 'link'
   label: string
@@ -52,15 +50,9 @@ export const navItems: NavEntry[] = [
       { label: 'PHOTO', href: '/galleries', accentColor: '#6e9985' },
       {
         label: 'DESIGNS',
-        href: null,
+        href: '/designs',
         accentColor: '#78793a',
         icon: '/icons/navbar/designs.svg',
-      },
-      {
-        label: 'FILM',
-        href: '/blog/films',
-        accentColor: '#262525',
-        icon: '/icons/navbar/video.svg',
       },
     ],
   },
@@ -72,18 +64,10 @@ export const navItems: NavEntry[] = [
     desktopIcon: '/icons/navbar/video.svg',
     mobileIcon: '/icons/navbar-mobile/video.svg',
     accentColor: '#262525',
-    items: [
-      { label: 'POSTS', href: '/blog/posts', accentColor: '#f2c14e' },
-      {
-        label: 'EXHIBITIONS',
-        href: '/blog/exhibitions',
-        accentColor: '#bae1c4',
-        icon: '/icons/navbar/exhibitions.svg',
-      },
-      { label: 'WORKSHOPS', href: '/blog/workshops', accentColor: '#0f8a7d' },
-      { label: 'CONCERTS', href: '/blog/concerts', accentColor: '#e0399a' },
-      { label: 'DIY', href: '/diy', accentColor: '#7778b0', icon: '/icons/navbar/diy.svg' },
-    ],
+    // Populated at request time from event types that have past events —
+    // see getPastEventTypeItems() in navbar.tsx. Empty here since this array
+    // is also imported by client components that can't touch the database.
+    items: [],
   },
   {
     type: 'link',

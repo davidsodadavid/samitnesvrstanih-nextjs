@@ -1,8 +1,9 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import 'leaflet/dist/leaflet.css'
 import type * as Leaflet from 'leaflet'
+import { getDirectionsUrl } from '@/lib/directions'
 import { pinIcon } from '../program-view'
 
 export function LocationMap({
@@ -29,7 +30,11 @@ export function LocationMap({
         attribution:
           '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
       }).addTo(map)
-      L.marker([lat, lng], { icon: pinIcon(L, color, iconUrl) }).addTo(map)
+      L.marker([lat, lng], { icon: pinIcon(L, color, iconUrl) })
+        .addTo(map)
+        .bindPopup(
+          `<a href="${getDirectionsUrl(lat, lng)}" target="_blank" rel="noopener noreferrer" class="font-body block px-2 py-1.5 text-center text-xs font-semibold uppercase">Get directions</a>`,
+        )
       mapRef.current = map
     })
 

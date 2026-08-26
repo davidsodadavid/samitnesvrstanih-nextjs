@@ -2,9 +2,9 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
-import { navItems, siteBrand } from './nav-items'
+import { siteBrand, type NavEntry } from './nav-items'
 
-export function MobileNav() {
+export function MobileNav({ navItems }: { navItems: NavEntry[] }) {
   const [open, setOpen] = useState(false)
   const [expandedGroup, setExpandedGroup] = useState<string | null>(null)
 

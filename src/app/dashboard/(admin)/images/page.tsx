@@ -28,8 +28,8 @@ export default async function ImagesPage({
     <>
       <h1 className="mb-5 text-2xl font-bold">Images</h1>
       <p className="mb-4 max-w-2xl text-sm text-zinc-500">
-        Utility images: post thumbnails, event images and sponsor logos. For gallery/content
-        photos with an author, use <b>Photography</b> instead.
+        Utility images: event images and sponsor logos. For gallery/content photos with an
+        author, use <b>Photography</b> instead.
       </p>
 
       {error && (

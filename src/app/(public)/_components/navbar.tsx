@@ -1,9 +1,35 @@
 import Link from 'next/link'
-import { navItems, siteBrand } from './nav-items'
+import { prisma } from '@/lib/prisma'
+import { navItems as staticNavItems, siteBrand, type NavEntry } from './nav-items'
 import { MobileNav } from './mobile-nav'
 import { NavDropdown } from './nav-dropdown'
 
-export function Navbar() {
+// PAST EVENTS lists every event type that has at least one event already
+// over — real festival history, not the hand-picked blog categories it used
+// to link to. Fetched here (server-only) rather than in nav-items.ts, which
+// client components also import and can't touch the database.
+async function getPastEventTypeItems() {
+  const types = await prisma.eventType.findMany({
+    where: { events: { some: { ends_at: { lt: new Date() } } } },
+    include: { icon: true },
+    orderBy: { name: 'asc' },
+  })
+  return types.map((type) => ({
+    label: type.name.toUpperCase(),
+    href: `/past-events/${type.id}`,
+    accentColor: type.color,
+    icon: type.icon?.url,
+  }))
+}
+
+export async function Navbar() {
+  const pastEventItems = await getPastEventTypeItems()
+  const navItems: NavEntry[] = staticNavItems.map((item) =>
+    item.type === 'group' && item.label === 'PAST EVENTS'
+      ? { ...item, items: pastEventItems }
+      : item,
+  )
+
   return (
     <header className="sticky top-0 z-40 bg-black">
       <nav className="relative hidden h-10 w-full items-center justify-end overflow-x-auto pr-4 md:flex lg:h-12 xl:h-14 2xl:h-[61px]">
@@ -50,7 +76,7 @@ export function Navbar() {
           </div>
         ))}
       </nav>
-      <MobileNav />
+      <MobileNav navItems={navItems} />
     </header>
   )
 }

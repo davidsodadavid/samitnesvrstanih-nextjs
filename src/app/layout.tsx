@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Mozilla_Headline, Mozilla_Text } from "next/font/google";
 import localFont from "next/font/local";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -52,7 +53,9 @@ export default function RootLayout({
       // (100vw doesn't subtract the scrollbar's width, so it overshoots by a few px)
       className={`overflow-x-hidden ${geistSans.variable} ${geistMono.variable} ${kharkivTone.variable} ${mozillaText.variable} ${mozillaHeadline.variable}`}
     >
-      <body>{children}</body>
+      <body>
+        <NuqsAdapter>{children}</NuqsAdapter>
+      </body>
     </html>
   );
 }

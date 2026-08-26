@@ -10,7 +10,7 @@ export function Footer() {
         className="mx-auto h-auto w-full max-w-[360px] sm:max-w-[600px]"
       />
       <p className="font-display mt-10 text-xs text-white sm:mt-[87px] sm:text-sm">
-        © Summit Of The Non Aligned 2026
+        © Summit Of The Non-Aligned 2026
       </p>
     </footer>
   )

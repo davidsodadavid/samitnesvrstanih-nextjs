@@ -1,7 +1,9 @@
 'use client'
 
 import Link from 'next/link'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { parseAsInteger, parseAsString, parseAsStringLiteral, useQueryState } from 'nuqs'
+import { getDirectionsUrl } from '@/lib/directions'
+import { Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import 'leaflet/dist/leaflet.css'
 import type * as Leaflet from 'leaflet'
 
@@ -55,10 +57,30 @@ export function DashedLine() {
   )
 }
 
-export function ProgramView({ days }: { days: ProgramDay[] }) {
-  const [view, setView] = useState<'list' | 'map'>('map')
-  const [dayKey, setDayKey] = useState<string | null>(null) // null = all days
-  const [eventTypeId, setEventTypeId] = useState<number | null>(null) // null = all types
+// Filters live in the URL (?view=&day=&type=) instead of component state, so
+// that navigating to an event and pressing back restores whatever filters
+// were selected — the browser restores the URL, and we read filters from it.
+export function ProgramView(props: { days: ProgramDay[] }) {
+  return (
+    <Suspense>
+      <ProgramViewInner {...props} />
+    </Suspense>
+  )
+}
+
+function ProgramViewInner({ days }: { days: ProgramDay[] }) {
+  const [view, setView] = useQueryState(
+    'view',
+    parseAsStringLiteral(['map', 'list']).withDefault('map').withOptions({ history: 'replace' }),
+  )
+  const [dayKey, setDayKey] = useQueryState(
+    'day',
+    parseAsString.withOptions({ history: 'replace' }),
+  ) // null = all days
+  const [eventTypeId, setEventTypeId] = useQueryState(
+    'type',
+    parseAsInteger.withOptions({ history: 'replace' }),
+  ) // null = all types
 
   const eventTypes = useMemo(() => {
     const byId = new Map<number, EventTypeStyle>()
@@ -70,6 +92,7 @@ export function ProgramView({ days }: { days: ProgramDay[] }) {
   const filteredDays = useMemo(
     () =>
       days
+        .map((d, i) => ({ ...d, number: i + 1 }))
         .filter((d) => dayKey === null || d.key === dayKey)
         .map((d) => ({
           ...d,
@@ -88,7 +111,7 @@ export function ProgramView({ days }: { days: ProgramDay[] }) {
           Map
         </button>
         <button type="button" onClick={() => setView('list')} className={tabClass(view === 'list')}>
-          Not map
+          List
         </button>
       </div>
 
@@ -163,14 +186,14 @@ export function ProgramView({ days }: { days: ProgramDay[] }) {
   )
 }
 
-function ProgramList({ days }: { days: ProgramDay[] }) {
+function ProgramList({ days }: { days: (ProgramDay & { number: number })[] }) {
   return (
     <div className="flex flex-col">
-      {days.map((day, i) => (
+      {days.map((day) => (
         <div key={day.key}>
           <div className="flex items-baseline justify-between gap-4 bg-black px-4 py-3">
             <span className="font-headline text-2xl font-bold text-white uppercase sm:text-3xl">
-              Day {i + 1}
+              Day {day.number}
             </span>
             <span className="font-headline text-lg font-bold text-white uppercase sm:text-xl">
               {day.label}
@@ -237,7 +260,13 @@ export function pinIcon(L: typeof Leaflet, color: string, iconUrl: string | null
   })
 }
 
-function ProgramMap({ days, eventTypes }: { days: ProgramDay[]; eventTypes: EventTypeStyle[] }) {
+export function ProgramMap({
+  days,
+  eventTypes,
+}: {
+  days: ProgramDay[]
+  eventTypes: EventTypeStyle[]
+}) {
   const containerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<Leaflet.Map | null>(null)
   const leafletRef = useRef<typeof Leaflet | null>(null)
@@ -303,7 +332,11 @@ function ProgramMap({ days, eventTypes }: { days: ProgramDay[]; eventTypes: Even
       marker.bindPopup(
         `<div class="w-[280px]">` +
           `<div class="truncate bg-[#ff3c21] py-1.5 pr-7 pl-1.5">` +
-          `<span class="font-headline text-xs font-bold text-black uppercase">${escapeHtml(location.name)}</span>` +
+          // Title text doubles as the "get directions" action — opens the
+          // location in Google/Apple Maps (see getDirectionsUrl).
+          `<a href="${getDirectionsUrl(location.lat, location.lng)}" target="_blank" rel="noopener noreferrer" class="popup-title-link font-headline text-xs font-bold uppercase">` +
+          escapeHtml(location.name) +
+          `</a>` +
           `</div>` +
           `<div class="font-body flex flex-col text-xs">` +
           events

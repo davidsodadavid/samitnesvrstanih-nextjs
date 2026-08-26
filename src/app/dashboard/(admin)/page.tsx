@@ -2,27 +2,25 @@ import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 
 export default async function DashboardHome() {
-  const [posts, galleries, diys, events, eventTypes, locations, photos, images, sponsors] =
+  const [galleries, events, eventTypes, locations, photos, designs, images, sponsors] =
     await Promise.all([
-      prisma.post.count(),
       prisma.gallery.count(),
-      prisma.diy.count(),
       prisma.event.count(),
       prisma.eventType.count(),
       prisma.location.count(),
       prisma.photo.count(),
+      prisma.design.count(),
       prisma.image.count(),
       prisma.sponsor.count(),
     ])
 
   const stats = [
-    { href: '/dashboard/posts', label: 'Posts', value: posts },
     { href: '/dashboard/galleries', label: 'Galleries', value: galleries },
-    { href: '/dashboard/diys', label: 'DIY', value: diys },
     { href: '/dashboard/events', label: 'Events', value: events },
     { href: '/dashboard/event-types', label: 'Event types', value: eventTypes },
     { href: '/dashboard/locations', label: 'Locations', value: locations },
     { href: '/dashboard/photos', label: 'Photos', value: photos },
+    { href: '/dashboard/designs', label: 'Designs', value: designs },
     { href: '/dashboard/images', label: 'Images', value: images },
     { href: '/dashboard/sponsors', label: 'Sponsors', value: sponsors },
   ]

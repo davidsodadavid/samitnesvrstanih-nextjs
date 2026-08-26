@@ -58,6 +58,18 @@ body {
 .leaflet-popup-content a:hover {
   background: rgba(255, 255, 255, 0.12);
 }
+/* Popup title link (location name -> get directions): black-on-orange, not
+   the white-on-black styling above. */
+.leaflet-popup-content a.popup-title-link {
+  display: inline !important;
+  color: black !important;
+  text-decoration: none !important;
+  cursor: pointer;
+}
+.leaflet-popup-content a.popup-title-link:hover {
+  background: none !important;
+  text-decoration: underline !important;
+}
 /* Thin white seams between map tiles: a known Leaflet/browser issue where
    subpixel rounding during pan/zoom leaves rounding gaps between adjacent
    tile images. Forcing each tile onto its own GPU compositing layer avoids

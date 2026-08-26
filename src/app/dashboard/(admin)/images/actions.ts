@@ -27,7 +27,7 @@ export async function deleteImage(formData: FormData) {
   if (!image) redirect('/dashboard/images')
 
   try {
-    // Post thumbnails and event images are optional FKs and get nulled;
+    // Event images are an optional FK and get nulled;
     // a sponsor logo is required and blocks the delete.
     await prisma.image.delete({ where: { id } })
   } catch {

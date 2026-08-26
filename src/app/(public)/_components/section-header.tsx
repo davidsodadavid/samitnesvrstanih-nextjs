@@ -10,8 +10,8 @@ function readableTextColor(hex: string): string {
 }
 
 // Full-bleed title bar (accent color + two corner icons) followed by the
-// decorative photo strip — the shared page header used by every /blog/[type]
-// section and other static pages like /about.
+// decorative photo strip — the shared page header used by /past-events/[id]
+// and other static pages like /about.
 export function SectionHeader({
   title,
   accentColor,
