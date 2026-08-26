@@ -1,6 +1,11 @@
 import { Footer } from './_components/footer'
 import { Navbar } from './_components/navbar'
 
+// The navbar's PAST EVENTS dropdown is built from the database, so every page
+// under this layout has to render at request time — prerendering them at build
+// time would need a database connection the build environment doesn't have.
+export const dynamic = 'force-dynamic'
+
 export default function PublicLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen flex-col">
