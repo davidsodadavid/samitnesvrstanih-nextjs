@@ -2,7 +2,9 @@ import Image from 'next/image'
 import { DashedLine } from './_components/dashed-line'
 import { HomeAnniversary } from './_components/home-anniversary'
 import { HomeDesignsCard } from './_components/home-designs-card'
+import { HomeDiyCard } from './_components/home-diy-card'
 import { HomeExhibitionsCard } from './_components/home-exhibitions-card'
+import { HomeVideoCard } from './_components/home-video-card'
 import { HomePhotoArchiveCard } from './_components/home-photo-archive-card'
 import { HomeProgramCard } from './_components/home-program-card'
 import { getEventTypes, getProgramDays } from './program/get-program-days'
@@ -91,6 +93,11 @@ export default async function HomePage() {
 
       <div className="mx-auto mt-6 max-w-7xl px-4 sm:mt-8">
         <HomePhotoArchiveCard />
+      </div>
+
+      <div className="mx-auto mt-6 grid max-w-7xl grid-cols-1 gap-6 px-4 sm:mt-8 lg:grid-cols-2">
+        <HomeDiyCard />
+        <HomeVideoCard />
       </div>
     </div>
   )

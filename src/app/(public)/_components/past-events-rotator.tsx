@@ -2,12 +2,12 @@
 
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import type { PastExhibition } from './get-past-exhibitions'
+import type { PastEventTeaser } from './get-past-events-by-type'
 
 const ROTATE_MS = 6000
 
-/** Cycles through recent exhibitions: photo on the left, teaser text on the right. */
-export function ExhibitionsRotator({ items }: { items: PastExhibition[] }) {
+/** Cycles through recent past events: photo on the left, teaser text on the right. */
+export function PastEventsRotator({ items }: { items: PastEventTeaser[] }) {
   const [index, setIndex] = useState(0)
 
   useEffect(() => {
@@ -17,7 +17,7 @@ export function ExhibitionsRotator({ items }: { items: PastExhibition[] }) {
   }, [items.length])
 
   if (items.length === 0) return null
-  // Guards against the list shrinking (fewer exhibitions after a revalidate).
+  // Guards against the list shrinking (fewer events after a revalidate).
   const current = items[index % items.length]
 
   return (
