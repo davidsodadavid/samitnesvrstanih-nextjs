@@ -13,7 +13,7 @@ const VISIBLE = 5
  * than by a whole page, so every photo comes around even at the narrow
  * breakpoints where only two or three tiles are on screen.
  */
-export function PhotoArchiveRotator({ photos, year }: { photos: ArchivePhoto[]; year: number }) {
+export function PhotoArchiveRotator({ photos }: { photos: ArchivePhoto[] }) {
   const [start, setStart] = useState(0)
 
   useEffect(() => {
@@ -32,20 +32,20 @@ export function PhotoArchiveRotator({ photos, year }: { photos: ArchivePhoto[]; 
   return (
     <div className="px-2 pb-2 sm:px-3 sm:pb-3">
       {/* A fixed row height with flex-1 tiles, rather than square tiles in a
-          fixed grid: the strip keeps the same height whether the gallery has
-          five photos to show or two. */}
+          fixed grid: the strip keeps the same height whether there are five
+          photos to show or two. */}
       <div className="flex h-40 gap-2 sm:h-[240px] sm:gap-3">
         {visible.map((photo, i) => (
           <Link
             key={`${start}-${i}-${photo.id}`}
-            href={`/galleries/${year}`}
+            href={`/galleries/${photo.year}`}
             className={`min-w-0 flex-1 border-2 border-black ${
               i === 2 ? 'hidden sm:block' : i > 2 ? 'hidden lg:block' : ''
             }`}
           >
             <img
               src={photo.url}
-              alt={photo.author ? `Photo by ${photo.author}` : `Photo from ${year}`}
+              alt={photo.author ? `Photo by ${photo.author}` : `Photo from ${photo.year}`}
               className="h-full w-full object-cover"
             />
           </Link>
