@@ -1,7 +1,9 @@
 import Image from 'next/image'
 import { DashedLine } from './_components/dashed-line'
+import { HomeAnniversary } from './_components/home-anniversary'
 import { HomeDesignsCard } from './_components/home-designs-card'
 import { HomeExhibitionsCard } from './_components/home-exhibitions-card'
+import { HomePhotoArchiveCard } from './_components/home-photo-archive-card'
 import { HomeProgramCard } from './_components/home-program-card'
 import { getEventTypes, getProgramDays } from './program/get-program-days'
 
@@ -79,6 +81,16 @@ export default async function HomePage() {
             <HomeDesignsCard />
           </div>
         </div>
+      </div>
+
+      <DashedLine color="white" className="mb-6 opacity-30 sm:mb-8" />
+
+      <HomeAnniversary />
+
+      <DashedLine color="white" className="mt-12 opacity-30 sm:mt-16" />
+
+      <div className="mx-auto mt-6 max-w-7xl px-4 sm:mt-8">
+        <HomePhotoArchiveCard />
       </div>
     </div>
   )
