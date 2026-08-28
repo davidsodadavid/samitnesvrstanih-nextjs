@@ -11,8 +11,9 @@ export function HomeCard({
   children,
 }: {
   title: string
-  art: string
-  icon: string
+  // Null for an event-type card whose art or icon hasn't been uploaded yet.
+  art?: string | null
+  icon?: string | null
   bgColor: string
   className?: string
   children?: React.ReactNode
@@ -23,13 +24,15 @@ export function HomeCard({
       style={{ backgroundColor: bgColor }}
     >
       <div className="relative flex">
-        <img src={art} alt="" className="absolute inset-0 h-full w-full object-cover" />
+        {art && <img src={art} alt="" className="absolute inset-0 h-full w-full object-cover" />}
         <h2 className="font-display relative z-10 flex items-center bg-black px-3 py-1 text-3xl text-white uppercase sm:text-5xl">
           {title}
         </h2>
-        <div className="relative z-10 ml-auto flex items-center px-3">
-          <img src={icon} alt="" className="h-8 w-auto sm:h-10" />
-        </div>
+        {icon && (
+          <div className="relative z-10 ml-auto flex items-center px-3">
+            <img src={icon} alt="" className="h-8 w-auto sm:h-10" />
+          </div>
+        )}
       </div>
 
       <div className="py-1.5">

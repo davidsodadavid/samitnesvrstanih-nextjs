@@ -64,9 +64,11 @@ model Event {
 model EventType {
   id      Int     @id @default(autoincrement())
   name    String
-  color   String  @default("#3b82f6") // hex color used for map pins/legend
-  icon    Image?  @relation(fields: [icon_id], references: [id])
+  color   String  @default("#3b82f6") // map pins/legend, and the homepage card's panel
+  icon    Image?  @relation("EventTypeIcon", fields: [icon_id], references: [id])
   icon_id Int?
+  art     Image?  @relation("EventTypeArt", fields: [art_id], references: [id]) // banner strip behind the homepage card's title
+  art_id  Int?
   events  Event[]
 
   @@map("event_types")
@@ -99,7 +101,8 @@ model Image {
   key         String      @unique // R2 object key, needed to delete the object from the bucket
   events      Event[]
   sponsors    Sponsor[]
-  event_types EventType[]
+  event_types EventType[] @relation("EventTypeIcon")
+  event_type_arts EventType[] @relation("EventTypeArt")
   galleries   Gallery[]
 
   @@map("images")

@@ -18,7 +18,7 @@ export default async function PastEventsPage({
 
   const eventType = await prisma.eventType.findUnique({
     where: { id: eventTypeId },
-    include: { icon: true },
+    include: { icon: true, art: true },
   })
   if (!eventType) notFound()
 
@@ -26,11 +26,14 @@ export default async function PastEventsPage({
 
   return (
     <>
+      {/* Colour, icon and strip all come from the type's dashboard entry, the
+          same fields its homepage card uses; the generic strip is only a
+          stand-in until an admin uploads art for it. */}
       <SectionHeader
         title={eventType.name}
         accentColor={eventType.color}
         icon={eventType.icon?.url}
-        photoSrc="/blog/header-strip.png"
+        photoSrc={eventType.art?.url ?? '/blog/header-strip.png'}
       />
 
       <PastEventList eventTypeId={eventTypeId} initial={firstPage} />

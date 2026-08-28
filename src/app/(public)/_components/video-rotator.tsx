@@ -38,24 +38,31 @@ export function VideoRotator({ items }: { items: FilmVideo[] }) {
   )
 
   return (
-    <div className="flex flex-col p-3 sm:p-4 lg:min-h-0 lg:flex-1">
+    <div className="flex flex-col p-3 sm:p-4">
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
         {visible.map((video, i) => (
-          <div key={`${page}-${i}-${video.id}`} className="aspect-video min-w-0 bg-black">
+          // The children are pinned to this frame rather than flowing inside
+          // it: as a plain block its height is only implied by aspect-ratio, so
+          // a percentage height on the button resolves to auto and the 4:3
+          // thumbnail ends up setting the box's height instead.
+          <div
+            key={`${page}-${i}-${video.id}`}
+            className="relative aspect-video min-w-0 bg-black"
+          >
             {playing === video.id ? (
               <iframe
                 src={youTubeEmbedUrl(video.videoId)}
                 title={video.title}
                 allow="autoplay; encrypted-media; picture-in-picture"
                 allowFullScreen
-                className="h-full w-full border-0"
+                className="absolute inset-0 h-full w-full border-0"
               />
             ) : (
               <button
                 type="button"
                 onClick={() => setPlaying(video.id)}
                 aria-label={`Play ${video.title}`}
-                className="group relative h-full w-full cursor-pointer"
+                className="group absolute inset-0 cursor-pointer"
               >
                 {/* hqdefault is 4:3 with bars; cover crops them to 16:9. */}
                 <img

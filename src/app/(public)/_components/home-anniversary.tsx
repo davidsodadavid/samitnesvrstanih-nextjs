@@ -38,7 +38,7 @@ export function HomeAnniversary() {
         <p className="font-display max-w-md text-xs leading-snug text-white sm:text-sm lg:max-w-2xl">
           Everything is open to the public, with the full schedule announced as the festival
           approaches. As always, expect a mix of planned events and spontaneous
-          gatherings&mdash;because that&apos;s what the summit has always been about.
+          gatherings&mdash;because that&apos;s what the Summit has always been about.
         </p>
 
         <p className="font-display shrink-0 text-xs text-white/70 sm:text-right sm:text-sm">

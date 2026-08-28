@@ -64,7 +64,7 @@ export default async function HomePage() {
         <p className="font-display mt-4 text-sm text-white sm:text-lg">
           Everything is open to the public, with the full schedule announced as the festival
           approaches. As always, expect a mix of planned events and spontaneous gatherings -
-          because that&apos;s what the summit has always been about.
+          because that&apos;s what the Summit has always been about.
         </p>
       </div>
 

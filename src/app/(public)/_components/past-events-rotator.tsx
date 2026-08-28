@@ -6,8 +6,21 @@ import type { PastEventTeaser } from './get-past-events-by-type'
 
 const ROTATE_MS = 6000
 
-/** Cycles through recent past events: photo on the left, teaser text on the right. */
-export function PastEventsRotator({ items }: { items: PastEventTeaser[] }) {
+/**
+ * Cycles through recent past events: photo on the left, teaser text on the right.
+ *
+ * Every row has a fixed height so the card doesn't jump as items rotate through
+ * teasers of different lengths — the text box clips instead of growing. Pass
+ * `stretch` for a card that has to fill a column of a set height (Exhibitions
+ * matching Program's), which trades the fixed height for filling the space.
+ */
+export function PastEventsRotator({
+  items,
+  stretch = false,
+}: {
+  items: PastEventTeaser[]
+  stretch?: boolean
+}) {
   const [index, setIndex] = useState(0)
 
   useEffect(() => {
@@ -21,20 +34,24 @@ export function PastEventsRotator({ items }: { items: PastEventTeaser[] }) {
   const current = items[index % items.length]
 
   return (
-    <div className="flex flex-col p-3 sm:p-4 lg:min-h-0 lg:flex-1">
-      {/* Fixed row height keeps the card from resizing as photos rotate; on
-          desktop it instead fills the card so the column can match Program's
-          height. Two equal columns — the grid splits the leftover space after
-          the gap evenly, so photo and text box are the same width. */}
-      <div className="grid grid-cols-1 gap-3 sm:h-[260px] sm:grid-cols-2 sm:gap-4 lg:h-auto lg:min-h-0 lg:flex-1">
-        <Link
-          href={`/program/${current.id}`}
-          className="block min-h-0 border-2 border-black sm:h-full"
-        >
+    <div className={`flex flex-col p-3 sm:p-4 ${stretch ? 'lg:min-h-0 lg:flex-1' : ''}`}>
+      {/* Stacked below sm, so the height is split into an explicit image row and
+          a text row rather than letting the teaser set it. From sm up the two
+          sit side by side in equal columns, sharing one fixed row height. */}
+      <div
+        className={`grid h-104 grid-cols-1 grid-rows-[12rem_minmax(0,1fr)] gap-3 sm:grid-cols-2 sm:grid-rows-1 sm:gap-4 ${
+          stretch
+            ? 'sm:h-[260px] lg:h-auto lg:min-h-0 lg:flex-1'
+            : // Roughly the height of the Films card's video tiles, so the two
+              // sit level in the grid row instead of leaving it half empty.
+              'sm:h-[160px]'
+        }`}
+      >
+        <Link href={`/program/${current.id}`} className="block min-h-0 border-2 border-black">
           <img
             src={current.imageUrl}
             alt={current.title}
-            className="h-48 w-full object-cover sm:h-full"
+            className="h-full w-full object-cover"
           />
         </Link>
 
