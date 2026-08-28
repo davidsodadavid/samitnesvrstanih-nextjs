@@ -15,7 +15,7 @@ export default async function EditEventPage({
   const [event, locations, eventTypes] = await Promise.all([
     prisma.event.findUnique({
       where: { id: Number(id) },
-      include: { image: { select: { id: true, url: true, key: true } } },
+      include: { image: { select: { url: true } } },
     }),
     prisma.location.findMany({ orderBy: { name: 'asc' } }),
     prisma.eventType.findMany({ orderBy: { name: 'asc' } }),
@@ -33,7 +33,7 @@ export default async function EditEventPage({
         locations={locations}
         eventTypes={eventTypes}
         event={event}
-        image={event.image}
+        imageUrl={event.image?.url}
       />
     </>
   )

@@ -46,19 +46,32 @@ model Gallery {
 }
 
 model Event {
-  id            Int       @id @default(autoincrement())
+  id            Int         @id @default(autoincrement())
   title         String
   description   String
   start_at      DateTime
   ends_at       DateTime
-  location      Location  @relation(fields: [location_id], references: [id])
+  location      Location    @relation(fields: [location_id], references: [id])
   location_id   Int
-  event_type    EventType @relation(fields: [event_type_id], references: [id])
+  event_type    EventType   @relation(fields: [event_type_id], references: [id])
   event_type_id Int
-  image         Image?    @relation(fields: [image_id], references: [id])
-  image_id      Int?
+  image         EventImage?
 
   @@map("events")
+}
+
+// An event's own image: exactly one, uploaded on the event form and deleted
+// with the event. Deliberately not an Image — that table is the shared library
+// browsable in the dashboard (sponsor logos, event type icons and art), and an
+// event's image is only ever meant to be seen on that event.
+model EventImage {
+  id       Int    @id @default(autoincrement())
+  url      String
+  key      String @unique // R2 object key, needed to delete the object from the bucket
+  event    Event  @relation(fields: [event_id], references: [id], onDelete: Cascade)
+  event_id Int    @unique
+
+  @@map("event_images")
 }
 
 model EventType {
@@ -94,12 +107,13 @@ model Sponsor {
   @@map("sponsors")
 }
 
-// Utility images uploaded via the admin dashboard (event images, sponsor logos)
+// Shared image library uploaded via the admin dashboard: sponsor logos and
+// event type icons/art. Event images live in EventImage instead, so they never
+// show up here.
 model Image {
   id          Int         @id @default(autoincrement())
   url         String
   key         String      @unique // R2 object key, needed to delete the object from the bucket
-  events      Event[]
   sponsors    Sponsor[]
   event_types EventType[] @relation("EventTypeIcon")
   event_type_arts EventType[] @relation("EventTypeArt")

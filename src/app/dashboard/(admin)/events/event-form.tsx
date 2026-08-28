@@ -6,8 +6,7 @@ import {
   TextInput,
 } from '../_components/form'
 import { MarkdownEditor } from '../_components/markdown-editor'
-import { ImagePicker } from '../_components/media-picker'
-import type { ImageItem } from '../_components/media-types'
+import { EventImageField } from './event-image-field'
 import type { Event, EventType, Location } from '@/generated/prisma/client'
 import { EVENT_TIME_ZONE, formatLocalDateTime } from '@/lib/event-time'
 
@@ -16,13 +15,13 @@ export function EventForm({
   locations,
   eventTypes,
   event,
-  image,
+  imageUrl,
 }: {
   action: (formData: FormData) => Promise<void>
   locations: Location[]
   eventTypes: EventType[]
   event?: Event
-  image?: ImageItem | null
+  imageUrl?: string | null
 }) {
   return (
     <FormCard action={action}>
@@ -75,7 +74,7 @@ export function EventForm({
         </Field>
       </div>
       <Field label="Image (optional)">
-        <ImagePicker name="image_id" initial={image} />
+        <EventImageField initialUrl={imageUrl} />
       </Field>
       <Field label="Description">
         <MarkdownEditor name="description" defaultValue={event?.description} />

@@ -23,7 +23,7 @@ function r2(): S3Client {
 // Stores a file under a collision-safe key, returns { key, url } for the DB row.
 export async function uploadToR2(
   file: File,
-  folder: 'photos' | 'images' | 'designs',
+  folder: 'photos' | 'images' | 'designs' | 'events',
 ): Promise<{ key: string; url: string }> {
   const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_')
   const key = `${folder}/${Date.now()}-${crypto.randomUUID().slice(0, 8)}-${safeName}`

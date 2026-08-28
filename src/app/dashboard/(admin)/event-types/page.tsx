@@ -51,9 +51,7 @@ export default async function EventTypesPage({
       <ErrorNote message={error ? (errors[error] ?? 'Something went wrong.') : undefined} />
 
       <p className="mb-4 max-w-3xl text-sm text-zinc-500">
-          Dev note:
-          <br />
-          Name should be plural, art is an icon that goes on the side and art is that wide banner that goes right below it
+          Name should be plural, icon is an icon that goes on the side and art is that wide banner
           <br />
           There are 3 pre-defined event-types that we use on the Homepage, they are not able to be renamed/deleted (diy, films, exhibitions)
       </p>

@@ -24,7 +24,7 @@ export async function getPastEventsByType(
   const events = await prisma.event.findMany({
     where: {
       ends_at: { lt: new Date() },
-      image_id: { not: null },
+      image: { isNot: null },
       event_type: { name: { equals: typeName, mode: 'insensitive' } },
     },
     orderBy: { start_at: 'desc' },
