@@ -35,12 +35,12 @@ model Design {
 }
 
 model Gallery {
-  id       Int     @id @default(autoincrement())
-  year     Int     @unique
-  authors  String? // free-form credit line, independent of Photo.author
-  photos   Photo[]
-  image    Image?  @relation(fields: [image_id], references: [id]) // shown as the link/cover on the frontend
-  image_id Int?
+  id        Int     @id @default(autoincrement())
+  year      Int     @unique
+  authors   String? // free-form credit line, independent of Photo.author
+  photos    Photo[]
+  banner    Image?  @relation("GalleryBanner", fields: [banner_id], references: [id]) // art filling the year's bar on /galleries
+  banner_id Int?
 
   @@map("galleries")
 }
@@ -117,7 +117,7 @@ model Image {
   sponsors    Sponsor[]
   event_types EventType[] @relation("EventTypeIcon")
   event_type_arts EventType[] @relation("EventTypeArt")
-  galleries   Gallery[]
+  gallery_banners Gallery[]   @relation("GalleryBanner")
 
   @@map("images")
 }

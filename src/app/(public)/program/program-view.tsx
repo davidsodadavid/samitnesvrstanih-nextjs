@@ -263,9 +263,13 @@ export function pinIcon(L: typeof Leaflet, color: string, iconUrl: string | null
 export function ProgramMap({
   days,
   eventTypes,
+  legendHref,
 }: {
   days: ProgramDay[]
   eventTypes: EventTypeStyle[]
+  // Set on the homepage teaser, where the legend doubles as a way into
+  // /program. Left unset on /program itself, which would only link to itself.
+  legendHref?: string
 }) {
   const containerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<Leaflet.Map | null>(null)
@@ -366,26 +370,36 @@ export function ProgramMap({
       />
       {eventTypes.length > 0 && (
         <div className="grid grid-cols-1 gap-px bg-white sm:grid-cols-2">
-          {eventTypes.map((t, i) => (
-            <div
-              key={t.id}
-              className={`flex items-stretch gap-3 bg-black ${
-                i === eventTypes.length - 1 && eventTypes.length % 2 === 1 ? 'sm:col-span-2' : ''
-              }`}
-            >
-              <span
-                className="flex w-20 shrink-0 items-center justify-center"
-                style={{ backgroundColor: t.color }}
-              >
-                {t.iconUrl && (
-                  <img src={t.iconUrl} alt="" className="h-12 w-12 object-contain" />
-                )}
-              </span>
-              <span className="font-display flex items-center py-4 text-base text-white uppercase">
-                {t.name}
-              </span>
-            </div>
-          ))}
+          {eventTypes.map((t, i) => {
+            const className = `flex items-stretch gap-3 bg-black ${
+              i === eventTypes.length - 1 && eventTypes.length % 2 === 1 ? 'sm:col-span-2' : ''
+            }`
+            const content = (
+              <>
+                <span
+                  className="flex w-20 shrink-0 items-center justify-center"
+                  style={{ backgroundColor: t.color }}
+                >
+                  {t.iconUrl && (
+                    <img src={t.iconUrl} alt="" className="h-12 w-12 object-contain" />
+                  )}
+                </span>
+                <span className="font-display flex items-center py-4 text-base text-white uppercase">
+                  {t.name}
+                </span>
+              </>
+            )
+
+            return legendHref ? (
+              <Link key={t.id} href={legendHref} className={className}>
+                {content}
+              </Link>
+            ) : (
+              <div key={t.id} className={className}>
+                {content}
+              </div>
+            )
+          })}
         </div>
       )}
     </div>

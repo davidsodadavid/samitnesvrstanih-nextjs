@@ -7,12 +7,12 @@ export function GalleryForm({
   action,
   gallery,
   selectedPhotos,
-  image,
+  banner,
 }: {
   action: (formData: FormData) => Promise<void>
   gallery?: Gallery
   selectedPhotos?: PhotoItem[]
-  image?: ImageItem | null
+  banner?: ImageItem | null
 }) {
   return (
     <FormCard action={action}>
@@ -35,8 +35,8 @@ export function GalleryForm({
           />
         </Field>
       </div>
-      <Field label="Link image (optional)">
-        <ImagePicker name="image_id" initial={image} />
+      <Field label="Bar art (optional)">
+        <ImagePicker name="banner_id" initial={banner} />
       </Field>
       <Field label="Photos">
         <PhotoMultiPicker initialSelected={selectedPhotos} />

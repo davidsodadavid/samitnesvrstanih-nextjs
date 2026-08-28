@@ -24,17 +24,18 @@ export default async function GalleryPage({
   const navGroup = navItems.find((item) => item.type === 'group' && item.label === 'GALLERY')
 
   return (
-    <div className="relative left-1/2 -mt-8 -mb-8 min-h-screen w-screen -translate-x-1/2 bg-black pb-8">
+    <div className="relative left-1/2 -mt-8 -mb-8 flex-1 w-screen -translate-x-1/2 bg-black">
+      {/* Same heading as the /galleries index, with the chosen year as the title. */}
       <SectionHeader
-        title="Gallery"
+        title={String(year)}
         accentColor={navGroup?.accentColor ?? '#6e9985'}
-        icon={navGroup?.desktopIcon}
+        icon="/galleries/photo-camera.svg"
         photoSrc="/galleries/header-strip.png"
         cancelTopPadding={false}
       />
 
       <div className="mx-auto max-w-5xl px-4 py-8">
-        <DashedLine color="white" />
+        <DashedLine color="white" className="my-8 opacity-30" />
 
         {gallery.authors && (
           <p className="font-body mb-4 text-sm tracking-wide text-white uppercase">
@@ -44,7 +45,7 @@ export default async function GalleryPage({
 
         <GalleryGrid year={year} initial={firstPage} />
 
-        <DashedLine color="white" />
+        <DashedLine color="white" className="my-8 opacity-30" />
       </div>
     </div>
   )

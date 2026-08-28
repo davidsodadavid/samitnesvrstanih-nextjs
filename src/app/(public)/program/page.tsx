@@ -31,7 +31,7 @@ export default async function ProgramPage() {
 
   if (days.length === 0) {
     return (
-      <div className="relative left-1/2 -mt-8 -mb-8 min-h-screen w-screen -translate-x-1/2 bg-[#ff3c21] pb-8">
+      <div className="relative left-1/2 -mt-8 -mb-8 flex-1 w-screen -translate-x-1/2 bg-[#ff3c21]">
         <ProgramHeader />
         <p className="px-4 py-8 text-white">No program yet.</p>
       </div>
@@ -39,7 +39,7 @@ export default async function ProgramPage() {
   }
 
   return (
-    <div className="relative left-1/2 -mt-8 -mb-8 min-h-screen w-screen -translate-x-1/2 bg-[#ff3c21] pb-8">
+    <div className="relative left-1/2 -mt-8 -mb-8 flex-1 w-screen -translate-x-1/2 bg-[#ff3c21]">
       <ProgramHeader />
       <div className="mx-auto max-w-5xl px-4 py-8">
         <ProgramView days={days} />

@@ -36,9 +36,64 @@ const mozillaHeadline = Mozilla_Headline({
   display: "swap",
 });
 
+// Absolute URLs are required for social cards. Set NEXT_PUBLIC_SITE_URL to the
+// live domain in the deploy environment; the fallback only serves local dev.
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+
+const description =
+  "Samit Nesvrstanih is a DIY skate and arts festival in Belgrade, 10-13 September 2026. " +
+  "Four days of skate sessions, live music, exhibitions, film screenings, workshops and talks - " +
+  "all open to the public.";
+
 export const metadata: Metadata = {
-  title: "Samit",
-  description: "Samit — posts, films, exhibitions, galleries and events",
+  metadataBase: new URL(siteUrl),
+  title: {
+    // Section pages set their own title and get the festival name appended.
+    default: "Samit Nesvrstanih - Belgrade, 10-13 September 2026",
+    template: "%s - Samit Nesvrstanih",
+  },
+  description,
+  applicationName: "Samit Nesvrstanih",
+  keywords: [
+    "Samit Nesvrstanih",
+    "Summit of the Non-Aligned",
+    "Belgrade",
+    "Beograd",
+    "skate festival",
+    "DIY",
+    "skateboarding",
+    "exhibitions",
+    "film screenings",
+    "2026",
+  ],
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    siteName: "Samit Nesvrstanih",
+    title: "Samit Nesvrstanih — Belgrade, 10-13 September 2026",
+    description,
+    url: "/",
+    locale: "en_US",
+    images: [
+      {
+        url: "/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Samit Nesvrstanih poster — Beograd, 10-13/9/2026",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Samit Nesvrstanih — Belgrade, 10-13 September 2026",
+    description,
+    images: ["/og-image.jpg"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-image-preview": "large" },
+  },
 };
 
 export default function RootLayout({

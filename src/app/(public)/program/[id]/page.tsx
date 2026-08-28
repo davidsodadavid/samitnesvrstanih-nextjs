@@ -33,7 +33,7 @@ export default async function EventPage({ params }: { params: Promise<{ id: stri
   if (!event) notFound()
 
   return (
-    <div className="relative left-1/2 -mt-8 -mb-8 min-h-screen w-screen -translate-x-1/2 bg-[#ff3c21] pb-8">
+    <div className="relative left-1/2 -mt-8 -mb-8 flex-1 w-screen -translate-x-1/2 bg-[#ff3c21]">
       <ProgramHeader />
       <div className="mx-auto max-w-5xl px-4 py-8">
         <DashedLine />

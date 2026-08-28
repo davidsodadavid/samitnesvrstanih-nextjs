@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { ProgramMap, type EventTypeStyle, type ProgramDay } from '../program/program-view'
 import { HomeCard } from './home-card'
 
@@ -19,9 +20,11 @@ export function HomeProgramCard({
       bgColor="#ff3c21"
     >
       <div className="p-3 sm:p-4">
-        <ProgramMap days={days} eventTypes={eventTypes} />
+        {/* The map keeps its own clicks (pins, zoom); the legend and the blurb
+            around it are what take you to the full programme. */}
+        <ProgramMap days={days} eventTypes={eventTypes} legendHref="/program" />
 
-        <div className="mt-6 bg-black px-2 py-1">
+        <Link href="/program" className="mt-6 block bg-black px-2 py-1">
           <p className="font-display text-base text-white sm:text-md">
             Over the course of several days, the festival spreads across different spots in
             Belgrade, bringing together skaters, artists, musicians, filmmakers, and everyone who
@@ -29,7 +32,7 @@ export function HomeProgramCard({
             exhibitions, film screenings, workshops, talks, and plenty of moments that happen
             naturally along the way.
           </p>
-        </div>
+        </Link>
       </div>
     </HomeCard>
   )

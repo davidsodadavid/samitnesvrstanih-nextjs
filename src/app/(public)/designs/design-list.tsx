@@ -43,7 +43,7 @@ export function DesignList({ initial }: { initial: DesignPage }) {
 
   return (
     <>
-      <div className="grid grid-cols-2 gap-1 bg-black sm:grid-cols-3 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 bg-black sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
         {designs.map((design, index) => (
           <button
             key={design.id}

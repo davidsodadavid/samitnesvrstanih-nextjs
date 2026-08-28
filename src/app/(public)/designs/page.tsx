@@ -15,21 +15,22 @@ export default async function DesignsPage() {
     .find((item) => item.href === '/designs')
 
   return (
-    <div className="relative left-1/2 -mt-8 -mb-8 min-h-screen w-screen -translate-x-1/2 bg-black pb-8">
+    <div className="relative left-1/2 -mt-8 -mb-8 flex-1 w-screen -translate-x-1/2 bg-black">
       <SectionHeader
         title="Designs"
         accentColor={navItem?.accentColor ?? '#78793a'}
-        icon={navItem?.icon}
-        photoSrc="/galleries/header-strip.png"
+        icon="/designs/icon.png"
+        photoSrc="/designs/banner.png"
+        titleColor="#000"
         cancelTopPadding={false}
       />
 
       <div className="mx-auto max-w-5xl px-4 py-8">
-        <DashedLine color="white" />
+        <DashedLine color="white" className="my-8 opacity-30" />
 
         <DesignList initial={firstPage} />
 
-        <DashedLine color="white" />
+        <DashedLine color="white" className="my-8 opacity-30" />
       </div>
     </div>
   )

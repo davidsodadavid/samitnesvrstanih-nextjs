@@ -40,7 +40,7 @@ export default async function HomePage() {
   const eventTypes = getEventTypes(days)
 
   return (
-    <div className="relative left-1/2 -mt-8 -mb-8 min-h-screen w-screen -translate-x-1/2 bg-black pb-8">
+    <div className="relative left-1/2 -mt-8 -mb-8 flex-1 w-screen -translate-x-1/2 bg-black">
       {/* Flattened export from Figma — title/date are baked into the poster art itself. */}
       <Image
         src="/hero/hero-bg.png"
