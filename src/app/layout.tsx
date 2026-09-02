@@ -36,9 +36,8 @@ const mozillaHeadline = Mozilla_Headline({
   display: "swap",
 });
 
-// Absolute URLs are required for social cards. Set NEXT_PUBLIC_SITE_URL to the
-// live domain in the deploy environment; the fallback only serves local dev.
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+// Absolute URLs are required for social cards, and the festival has one domain.
+const siteUrl = "https://samitnesvrstanih.com";
 
 const description =
   "Samit Nesvrstanih is a DIY skate and arts festival in Belgrade, 10-13 September 2026. " +

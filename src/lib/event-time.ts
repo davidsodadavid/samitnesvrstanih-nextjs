@@ -52,3 +52,44 @@ export function formatLocalDateTime(date: Date, timeZone: string): string {
   const parts = Object.fromEntries(formatter.formatToParts(date).map((p) => [p.type, p.value]))
   return `${parts.year}-${parts.month}-${parts.day}T${parts.hour}:${parts.minute}`
 }
+
+// The programme runs past midnight: a set that starts at 01:00 belongs to the
+// night before, not to a fresh day. Programme days therefore break at 06:00
+// local time rather than at midnight, so late events stay grouped with the day
+// the admin scheduled them under.
+export const PROGRAM_DAY_START_HOUR = 6
+
+const dayPartsFormatters = new Map<string, Intl.DateTimeFormat>()
+
+function dayPartsFormatter(timeZone: string): Intl.DateTimeFormat {
+  let formatter = dayPartsFormatters.get(timeZone)
+  if (!formatter) {
+    formatter = new Intl.DateTimeFormat('en-CA', {
+      timeZone,
+      hourCycle: 'h23',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+    })
+    dayPartsFormatters.set(timeZone, formatter)
+  }
+  return formatter
+}
+
+// The programme day an instant falls on, as a Date anchored at noon UTC. Format
+// it with `timeZone: 'UTC'` to get the label — it carries a calendar date, not a
+// real moment. Anchoring at noon (rather than midnight) keeps the day-before
+// subtraction clear of any DST shift that could slip the date.
+export function programDay(instant: Date, timeZone: string): Date {
+  const parts = Object.fromEntries(
+    dayPartsFormatter(timeZone)
+      .formatToParts(instant)
+      .map((part) => [part.type, part.value]),
+  )
+  const day = new Date(
+    Date.UTC(Number(parts.year), Number(parts.month) - 1, Number(parts.day), 12),
+  )
+  if (Number(parts.hour) < PROGRAM_DAY_START_HOUR) day.setUTCDate(day.getUTCDate() - 1)
+  return day
+}

@@ -3,7 +3,7 @@ import { toPlainText, truncate } from '@/lib/markdown-text'
 
 const TEASER_LENGTH = 320
 
-export type PastEventTeaser = {
+export type EventTeaser = {
   id: number
   title: string
   teaser: string
@@ -11,19 +11,21 @@ export type PastEventTeaser = {
 }
 
 /**
- * Most recent past events of one type that have an image, newest first — the
- * shape the homepage's Exhibitions and DIY cards rotate through.
+ * The latest events of one type that have an image, newest first — the shape
+ * the homepage's Exhibitions and DIY cards rotate through.
+ *
+ * Upcoming events count: what makes an event showable here is having a picture,
+ * not having happened, the same rule the Films card uses.
  *
  * The type is matched by name rather than a hardcoded id, so it can be deleted
  * and recreated in the dashboard without breaking the card that uses it.
  */
-export async function getPastEventsByType(
+export async function getLatestEventsByType(
   typeName: string,
   limit = 5,
-): Promise<PastEventTeaser[]> {
+): Promise<EventTeaser[]> {
   const events = await prisma.event.findMany({
     where: {
-      ends_at: { lt: new Date() },
       image: { isNot: null },
       event_type: { name: { equals: typeName, mode: 'insensitive' } },
     },

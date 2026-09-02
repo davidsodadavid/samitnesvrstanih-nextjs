@@ -98,6 +98,11 @@ R2_BUCKET="samit"
 R2_PUBLIC_URL="https://pub-....r2.dev"
 ```
 
+Build-time variables live in the deploy workflow, not here: anything prefixed
+`NEXT_PUBLIC_` is inlined into the browser bundle during `pnpm build`, so setting
+it on the server has no effect. Currently that is `NEXT_PUBLIC_CARTO_API_KEY`
+(CARTO basemap tiles), supplied by the `CARTO_API_KEY` GitHub secret.
+
 ### 7. pm2
 
 Create `/srv/samit/ecosystem.config.js` (owner `deploy`):

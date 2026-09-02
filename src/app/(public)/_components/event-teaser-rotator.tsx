@@ -2,23 +2,23 @@
 
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import type { PastEventTeaser } from './get-past-events-by-type'
+import type { EventTeaser } from './get-events-by-type'
 
 const ROTATE_MS = 6000
 
 /**
- * Cycles through recent past events: photo on the left, teaser text on the right.
+ * Cycles through recent events of one type: photo on the left, teaser on the right.
  *
  * Every row has a fixed height so the card doesn't jump as items rotate through
  * teasers of different lengths — the text box clips instead of growing. Pass
  * `stretch` for a card that has to fill a column of a set height (Exhibitions
  * matching Program's), which trades the fixed height for filling the space.
  */
-export function PastEventsRotator({
+export function EventTeaserRotator({
   items,
   stretch = false,
 }: {
-  items: PastEventTeaser[]
+  items: EventTeaser[]
   stretch?: boolean
 }) {
   const [index, setIndex] = useState(0)

@@ -16,6 +16,9 @@ jobs:
     env:
       # Dummy — the build must not touch a database (all DB pages are force-dynamic)
       DATABASE_URL: postgresql://build:build@localhost:5432/build
+      # NEXT_PUBLIC_* is inlined at build time, so it has to be present here and
+      # not only on the server. This one is a public, referrer-restricted key.
+      NEXT_PUBLIC_CARTO_API_KEY: ${{ secrets.CARTO_API_KEY }}
     steps:
       - uses: actions/checkout@v4
 

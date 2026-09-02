@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { parseAsInteger, parseAsString, parseAsStringLiteral, useQueryState } from 'nuqs'
+import { BASEMAP_ATTRIBUTION, BASEMAP_TILE_URL } from '@/lib/basemap'
 import { getDirectionsUrl } from '@/lib/directions'
 import { Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import 'leaflet/dist/leaflet.css'
@@ -284,10 +285,7 @@ export function ProgramMap({
       if (cancelled || !containerRef.current || mapRef.current) return
       leafletRef.current = L
       const map = L.map(containerRef.current)
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-        attribution:
-          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-      }).addTo(map)
+      L.tileLayer(BASEMAP_TILE_URL, { attribution: BASEMAP_ATTRIBUTION }).addTo(map)
       mapRef.current = map
       setMapReady(true)
     })

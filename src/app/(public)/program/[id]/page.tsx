@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { EVENT_TIME_ZONE } from '@/lib/event-time'
+import { EVENT_TIME_ZONE, programDay } from '@/lib/event-time'
 import { prisma } from '@/lib/prisma'
 import { ZoomableImage } from '../../_components/lightbox'
 import { Markdown } from '../../_components/markdown'
@@ -9,8 +9,10 @@ import { LocationMap } from './location-map'
 
 export const dynamic = 'force-dynamic'
 
+// Matches the grouping on /program: a post-midnight event is shown under the
+// day it belongs to, not the calendar day it technically starts on.
 const dayFormat = new Intl.DateTimeFormat('en-GB', {
-  timeZone: EVENT_TIME_ZONE,
+  timeZone: 'UTC',
   weekday: 'long',
   day: 'numeric',
   month: 'long',
@@ -51,7 +53,7 @@ export default async function EventPage({ params }: { params: Promise<{ id: stri
               <span className="min-w-0">{event.title}</span>
             </span>
             <span className="font-body text-right text-sm text-white sm:shrink-0 sm:text-base">
-              {dayFormat.format(event.start_at)}
+              {dayFormat.format(programDay(event.start_at, EVENT_TIME_ZONE))}
               <br />
               {timeFormat.format(event.start_at)}–{timeFormat.format(event.ends_at)}
             </span>

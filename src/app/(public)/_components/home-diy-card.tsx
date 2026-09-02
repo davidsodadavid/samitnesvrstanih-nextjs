@@ -1,8 +1,8 @@
 import { DIY_TYPE } from '@/lib/homepage-event-types'
+import { EventTeaserRotator } from './event-teaser-rotator'
 import { getEventTypeCard } from './get-event-type-card'
-import { getPastEventsByType } from './get-past-events-by-type'
+import { getLatestEventsByType } from './get-events-by-type'
 import { HomeCard } from './home-card'
-import { PastEventsRotator } from './past-events-rotator'
 
 // Only used until the type exists in the dashboard.
 const FALLBACK_COLOR = '#7978b1'
@@ -11,7 +11,7 @@ const FALLBACK_COLOR = '#7978b1'
 // pointed at a different event type.
 export async function HomeDiyCard() {
   const [events, style] = await Promise.all([
-    getPastEventsByType(DIY_TYPE),
+    getLatestEventsByType(DIY_TYPE),
     getEventTypeCard(DIY_TYPE),
   ])
 
@@ -22,7 +22,7 @@ export async function HomeDiyCard() {
       icon={style?.iconUrl}
       bgColor={style?.color ?? FALLBACK_COLOR}
     >
-      <PastEventsRotator items={events} />
+      <EventTeaserRotator items={events} />
     </HomeCard>
   )
 }

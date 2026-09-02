@@ -1,11 +1,13 @@
-import { EVENT_TIME_ZONE, parseLocalDateTime } from '@/lib/event-time'
+import { EVENT_TIME_ZONE, parseLocalDateTime, programDay } from '@/lib/event-time'
 import { prisma } from '@/lib/prisma'
 import type { EventTypeStyle, ProgramDay } from './program-view'
 
 const YEAR = 2026
 
+// Fed a programme day from `programDay()`, which is a calendar date anchored
+// at noon UTC — not an instant to be re-interpreted in the festival's zone.
 const dayFormat = new Intl.DateTimeFormat('en-GB', {
-  timeZone: EVENT_TIME_ZONE,
+  timeZone: 'UTC',
   weekday: 'long',
   day: 'numeric',
   month: 'long',
@@ -32,10 +34,13 @@ export async function getProgramDays(): Promise<ProgramDay[]> {
 
   const days: ProgramDay[] = []
   for (const event of events) {
-    const key = dayFormat.format(event.start_at)
+    // Events arrive sorted by start time, and a post-midnight event maps back
+    // onto the day before it, so equal keys stay adjacent and this stays a
+    // single pass.
+    const key = dayFormat.format(programDay(event.start_at, EVENT_TIME_ZONE))
     let day = days.at(-1)
     if (!day || day.key !== key) {
-      day = { key, label: dayFormat.format(event.start_at), events: [] }
+      day = { key, label: key, events: [] }
       days.push(day)
     }
     day.events.push({

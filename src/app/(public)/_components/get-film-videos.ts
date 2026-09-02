@@ -13,10 +13,10 @@ export type FilmVideo = {
  * The type is matched by name rather than a hardcoded id, so it can be deleted
  * and recreated in the dashboard without breaking the card.
  *
- * Unlike the other homepage cards this isn't restricted to past events: what
- * makes a film event showable here is having a video, not having happened.
- * Descriptions mix prose with the embed, so the id is scanned for rather than
- * parsed out of a known position, and events without one drop off the list.
+ * Upcoming events count, as on the other homepage cards: what makes a film
+ * event showable here is having a video, not having happened. Descriptions mix
+ * prose with the embed, so the id is scanned for rather than parsed out of a
+ * known position, and events without one drop off the list.
  */
 export async function getFilmVideos(typeName: string, limit = 6): Promise<FilmVideo[]> {
   const events = await prisma.event.findMany({
